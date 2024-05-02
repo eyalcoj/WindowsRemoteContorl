@@ -14,7 +14,7 @@ class ServerApplication:
     def __init__(self):
         self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        self.__server_connection = ServerConnection(self.__server_socket, Constance.ADDR)
+        self.__server_connection = ServerConnection(self.__server_socket, Constance.ADDR, [])
         self.__start()
 
     def __close(self):

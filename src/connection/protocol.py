@@ -11,7 +11,7 @@ class Constants:
 class PacketType(Enum):
     ERROR = -1
     DISCONNECT = 0
-    LOGIN = 1
+    NAME_INPUT = 1
     REGISTER = 2
     LOGOUT = 3
     TEXT = 4

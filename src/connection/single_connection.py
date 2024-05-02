@@ -10,10 +10,10 @@ class SingleConnection(ABC):
         self._socket = socket
         self._addr = addr
         self._handle_connection_thread = threading.Thread(target=self._handle_connection)
-        self._is_handle_connection = None
+        self.is_handle_connection = None
         self._start_handle_data()
 
-    def _receive_data(self):
+    def receive_data(self):
         packet_type, data = protocol.recv2(self._socket)
         if packet_type != PacketType.ERROR:
             print(f"[RECEIVE_DATA] receive from {self._addr}: {(packet_type, data)}")
@@ -25,17 +25,17 @@ class SingleConnection(ABC):
 
     def _handle_connection(self):
         print(f"\n[NEW CONNECTION] {self._addr} connected.")
-        while self._is_handle_connection:
-            packet_type, data = self._receive_data()
+        while self.is_handle_connection:
+            packet_type, data = self.receive_data()
             if packet_type != PacketType.ERROR:
                 self._handle_data(packet_type, data)
 
     def _start_handle_data(self):
-        self._is_handle_connection = True
+        self.is_handle_connection = True
         self._handle_connection_thread.start()
 
     def _stop_handle_data(self):
-        self._is_handle_connection = False
+        self.is_handle_connection = False
 
     @abstractmethod
     def _handle_data(self, packet_type, data):
