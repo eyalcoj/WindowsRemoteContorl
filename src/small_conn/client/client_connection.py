@@ -1,8 +1,8 @@
 from src.connection.protocol import PacketType
-from src.connection.single_connection import SingleConnection
+from src.connection.single_connection import SocketConnection
 
 
-class ClientServerConnection(SingleConnection):
+class ClientServerConnection(SocketConnection):
     def __init__(self, client_socket, addr):
         super().__init__(client_socket, addr)
         self.__name_input_feedback = ["", 0]

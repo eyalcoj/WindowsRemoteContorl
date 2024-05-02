@@ -15,6 +15,8 @@ class PacketType(Enum):
     REGISTER = 2
     LOGOUT = 3
     TEXT = 4
+    IMG = 5
+    SHARE_SCREEN_REQUEST = 6
 
 
 
@@ -25,7 +27,7 @@ def __send_by_socket(payload: dict, conn: socket.socket(socket.AF_INET, socket.S
             payload_length = len(payload_json)
             encode_payload_length = str(payload_length).encode(Constants.FORMAT)
             encode_payload_length = b' ' * (Constants.HEADER - len(encode_payload_length)) + encode_payload_length
-            conn.send(encode_payload_length + payload_json.encode(Constants.FORMAT))
+            conn.sendall(encode_payload_length + payload_json.encode(Constants.FORMAT))
 
     except Exception as e:
         print(f"[ERROR] in send_package: {e}")

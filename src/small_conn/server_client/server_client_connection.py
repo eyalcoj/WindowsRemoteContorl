@@ -1,8 +1,8 @@
 from src.connection.protocol import PacketType
-from src.connection.single_connection import SingleConnection
+from src.connection.single_connection import SocketConnection
 
 
-class ServerClientConnection(SingleConnection):
+class ServerClientConnection(SocketConnection):
     def __init__(self, server_client_socket, addr):
         super().__init__(server_client_socket, addr)
         self.__user_name = ["", 0]

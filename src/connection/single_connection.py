@@ -5,7 +5,7 @@ from src.connection import protocol
 from src.connection.protocol import PacketType
 
 
-class SingleConnection(ABC):
+class SocketConnection(ABC):
     def __init__(self, socket, addr):
         self._socket = socket
         self._addr = addr
