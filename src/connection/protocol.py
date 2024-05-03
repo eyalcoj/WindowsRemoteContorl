@@ -17,6 +17,7 @@ class PacketType(Enum):
     TEXT = 4
     IMG = 5
     SHARE_SCREEN_REQUEST = 6
+    DATA_SAVER_UPDATE = 7
 
 
 

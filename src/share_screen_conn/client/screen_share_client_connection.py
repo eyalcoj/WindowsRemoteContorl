@@ -1,10 +1,12 @@
 from src.connection.protocol import PacketType
 from src.connection.single_connection import SocketConnection
+from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
 
 
 class ScreenShareClientServerConnection(SocketConnection):
-    def __init__(self, client_socket, addr):
+    def __init__(self, client_socket, addr, client_data_saver: ClientDataSaver):
         super().__init__(client_socket, addr)
+        self.__client_data_saver = client_data_saver
         self.__is_passing_share_screen = False
 
     def _handle_data(self, packet_type, data):
@@ -23,5 +25,4 @@ class ScreenShareClientServerConnection(SocketConnection):
 
     def is_passing_share_screen(self):
         return self.__is_passing_share_screen
-
 

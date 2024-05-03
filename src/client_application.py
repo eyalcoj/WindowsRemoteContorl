@@ -1,8 +1,16 @@
 import socket
+import sys
+import threading
+
+from PyQt5.QtWidgets import QApplication
 
 from src.share_screen_conn.client.screen_share_client_connection import ScreenShareClientServerConnection
 from src.share_screen_conn.client.share_screen_client_connection_wraper import ShareScreenClientConnectionWraper
 from src.small_conn.client.client_connection import ClientServerConnection
+from src.small_conn.client.client_connection_warper import ClientConnectionWarper
+from src.small_conn.client.client_data_saver import ClientDataSaver
+from src.small_conn.client.gui.client_gui import ClientUserGui
+from src.small_conn.client.gui.client_name_input_gui import NameInputGUI
 
 
 class Constance:
@@ -17,38 +25,51 @@ class ClientApplication:
     def __init__(self):
         self.__run = True
         self.__client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__share_screen_client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__client_data_saver = ClientDataSaver()
+
         self.feedback_number = 0
         self.feedback = ""
 
-        self.__client_connection = ClientServerConnection(self.__client_socket, Constance.ADDR)
-        self.__share_screen_client_connection = ScreenShareClientServerConnection(self.__client_socket, Constance.ADDR)
-        self.share_screen_client_connection_wraper = ShareScreenClientConnectionWraper(
+        self.__client_connection = ClientServerConnection(self.__client_socket, Constance.ADDR, self.__client_data_saver)
+        self.__client_connection_warper = ClientConnectionWarper(self.__client_connection)
+
+        self.__share_screen_client_connection = ScreenShareClientServerConnection(self.__share_screen_client_socket,
+                                                                                  Constance.ADDR, self.__client_data_saver)
+        self.__share_screen_client_connection_wraper = ShareScreenClientConnectionWraper(
             self.__share_screen_client_connection)
 
-        self.__start()
+        self.__client_connection_warper.open()
+        self.__share_screen_client_connection_wraper.open()
 
-        self.input_user_name(input("enter you name: "))
+        app = QApplication(sys.argv)
 
-        print(self.feedback)
+        self.name_input_gui = NameInputGUI(self.__client_connection_warper)
+        self.name_input_gui.show()
+        t = threading.Thread(target=self.check_conn, args=(self.name_input_gui,))
+        t.start()
+        app.exec_()
 
-        input("enter somthing\n")
+        user_name = self.name_input_gui.get_name()
+
+        if user_name != "":
+            self.client_user_gui = ClientUserGui(user_name, self.__client_data_saver)
+            self.client_user_gui.show()
+            t = threading.Thread(target=self.check_conn, args=(self.client_user_gui,))
+            t.start()
+            app.exec_()
 
         self.__close()
 
-    def input_user_name(self, name):
-        self.__client_connection.name_input_request(name)
-
-        feedback = self.__client_connection.get_name_input_feedback()
-        while self.feedback_number == feedback[1]:
-            feedback = self.__client_connection.get_name_input_feedback()
-
-        self.feedback_number == feedback[1]
-        self.feedback = feedback[0]
+    def check_conn(self, gui):
+        while self.__client_connection.is_handle_connection:
+            pass
+        gui.close()
 
     def __close(self):
-        self.__client_connection.self_disconnect()
-        self.share_screen_client_connection_wraper.close()
+        self.__client_connection_warper.close()
+        self.__share_screen_client_connection_wraper.close()
 
-    def __start(self):
-        self.__client_connection.connect()
-        self.share_screen_client_connection_wraper.open()
+    # def __start(self):
+    #     self.__client_connection_warper.open()
+    #     self.__share_screen_client_connection_wraper.open()

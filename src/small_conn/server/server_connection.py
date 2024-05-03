@@ -4,6 +4,7 @@ import threading
 from src.data_saver.secured_data_saver import SecuredDataSaver
 from src.small_conn.server_client.server_client_connection import ServerClientConnection
 from src.small_conn.server_client.server_client_data_saver import ServerClientDataSaver
+from src.utils.utils import find_changes_between_lists
 
 
 class ServerConnection:
@@ -13,9 +14,9 @@ class ServerConnection:
         self.__server_connection.settimeout(2)
         self.__user_list: SecuredDataSaver = user_list
         self.__user_conn_list: SecuredDataSaver = SecuredDataSaver()
-        self.__all_thread = []
         self.__addr = addr
         self.__run = True
+        threading.Thread(target=self.data_saver_update).start()
 
     def __connect_clients(self):
         try:
@@ -26,8 +27,8 @@ class ServerConnection:
             pass
         else:
             pass
-            server_client_connection = ServerClientConnection(server_client_socket, addr)
-            user_connection_thread = threading.Thread(target=self.user_connection, args=(server_client_connection, ))
+            server_client_connection = ServerClientConnection(server_client_socket, addr, ServerClientDataSaver())
+            user_connection_thread = threading.Thread(target=self.user_connection, args=(server_client_connection,))
             user_connection_thread.start()
 
     def user_connection(self, server_client_connection):
@@ -54,7 +55,7 @@ class ServerConnection:
             else:
                 server_client_connection.name_input_response("The name is not in use")
                 server_client_connection.is_input_name = True
-                self.__user_list.set_value(user_name[0], ServerClientDataSaver())
+                self.__user_list.set_value(user_name[0], server_client_connection.get_server_client_data_saver())
                 self.__user_conn_list.set_value(user_name[0], server_client_connection)
                 print(f"[USER CONNECTED] {user_name[0]} {server_client_connection}")
                 return user_name[0]
@@ -71,6 +72,13 @@ class ServerConnection:
         self.__user_list.remove(name)
         self.__user_conn_list.remove(name)
         print(f"[USER DISCONNECTED] {name} {server_client_connection}")
+
+    def remove_user_name(self, name):
+        server_client_connection: ServerClientConnection = self.__user_conn_list.get_value(name)
+        server_client_connection.self_disconnect()
+        self.__user_list.remove(name)
+        self.__user_conn_list.remove(name)
+        print(f"[USER REMOVE] {name} {server_client_connection}")
 
     def disconnect_all_user_name(self):
         users_names = self.__user_list.get_keys()
@@ -94,3 +102,15 @@ class ServerConnection:
         self.__run = False
         self.disconnect_all_user_name()
         self.__server_connection.close()
+
+    def data_saver_update(self):
+        previous_users_names = []
+        while self.__run:
+            users_names = self.__user_list.get_keys()
+            added, removed = find_changes_between_lists(previous_users_names, users_names)
+            if len(removed) > 0:
+                for _ in removed:
+                    print("remove")
+                    self.remove_user_name(_)
+
+            previous_users_names = users_names

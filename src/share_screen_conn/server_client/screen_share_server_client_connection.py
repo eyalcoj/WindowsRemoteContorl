@@ -1,7 +1,3 @@
-import io
-
-from PIL import Image
-
 from src.connection.protocol import PacketType
 from src.connection.single_connection import SocketConnection
 

@@ -1,9 +1,13 @@
 import socket
+import sys
 import threading
 
+from PyQt5.QtWidgets import QApplication
+
 from src.data_saver.secured_data_saver import SecuredDataSaver
-from src.application.server.server_connection import ServerConnection
-from src.share_screen.server.server_connection import ShareScreenServerConnection
+from src.share_screen_conn.server.server_connection import ShareScreenServerConnection
+from src.small_conn.server.server_connection import ServerConnection
+from src.small_conn.server.server_gui import ServerGui
 
 
 class Constance:
@@ -17,14 +21,19 @@ class Constance:
 class ServerApplication:
     def __init__(self):
         self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__share_screen_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__users_data_saver = SecuredDataSaver()
         self.__server_connection = ServerConnection(self.__server_socket, Constance.ADDR, self.__users_data_saver)
-        self.__share_screen_server_connection = ShareScreenServerConnection(self.__server_socket,
+        self.__share_screen_server_connection = ShareScreenServerConnection(self.__share_screen_server_socket,
                                                                             Constance.ADDR_SHARE_SCREEN,
                                                                             self.__users_data_saver)
-        threading.Thread(target=self.__start).start()
+        self.__start()
 
-        input("enter somthing\n")
+        app = QApplication(sys.argv)
+
+        self.server_gui = ServerGui(self.__users_data_saver)
+        self.server_gui.show()
+        app.exec_()
 
         self.__close()
 
@@ -34,6 +43,6 @@ class ServerApplication:
 
     def __start(self):
         self.__server_connection.connect()
-        self.__server_connection.start()
+        threading.Thread(target=self.__server_connection.start).start()
         self.__share_screen_server_connection.connect()
-        self.__share_screen_server_connection.start()
+        threading.Thread(target=self.__share_screen_server_connection.start).start()

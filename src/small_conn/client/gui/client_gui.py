@@ -4,18 +4,17 @@ import time
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 
-from src.client.client_user_database import ClientUserDatabase, ValueTypes
+from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
 
 
 class ClientUserGui(QMainWindow):
-    def __init__(self, data_base: ClientUserDatabase):
+    def __init__(self, name, client_data_saver: ClientDataSaver):
         super().__init__()
-
+        self.__name = name
+        self.__client_data_saver = client_data_saver
         self.__run = True
-        self.__data_base = data_base
-        self.__data_base.set_value(ValueTypes.IS_GUI_CONNECTED, True)
 
-        self.setWindowTitle(f"Control Board")
+        self.setWindowTitle(f"{self.__name}")
         self.setFixedSize(300, 150)  # Set the fixed size of the window
 
         # Layout and widget setup
@@ -57,20 +56,15 @@ class ClientUserGui(QMainWindow):
         self.screen_share_button.clicked.connect(lambda: self.toggle_screen_share_button())
         self.disconnect_button.clicked.connect(self.disconnect_user)
 
-        self.data_base_update_thread = threading.Thread(target=self.database_update)
-        self.data_base_update_thread.start()
+        threading.Thread(target=self.data_saver_update).start()
 
     def toggle_keyboard_button(self):
-        keyboard_status = self.__data_base.get_value(ValueTypes.KEYBOARD_INPUT)
-        keyboard_status = not keyboard_status
-        self.__data_base.set_value(ValueTypes.KEYBOARD_INPUT, keyboard_status)
-        print(self.__data_base.__str__())
+        current_status = self.__client_data_saver.get_value(KeyValue.IS_CLIENT_KEYBOARD)
+        self.__client_data_saver.set_value(KeyValue.IS_CLIENT_KEYBOARD, not current_status)
 
     def toggle_screen_share_button(self):
-        screen_share_status = self.__data_base.get_value(ValueTypes.SCREEN_SHARE_INPUT)
-        screen_share_status = not screen_share_status
-        self.__data_base.set_value(ValueTypes.SCREEN_SHARE_INPUT, screen_share_status)
-        print(self.__data_base.__str__())
+        current_status = self.__client_data_saver.get_value(KeyValue.IS_CLIENT_SHARE_SCREEN)
+        self.__client_data_saver.set_value(KeyValue.IS_CLIENT_SHARE_SCREEN, not current_status)
 
     def set_indicator(self, is_green, indicator):
         if is_green:
@@ -87,44 +81,36 @@ class ClientUserGui(QMainWindow):
     def disconnect_user(self):
         print("Disconnected!")
         self.close()
+
     #     it goes to the closeEvent before closing
 
     def closeEvent(self, event):
         print("X closing")
         self.__run = False
-        self.__data_base.set_value(ValueTypes.IS_GUI_CONNECTED, False)
         event.accept()
 
-    def database_update(self):
-        # # default
-        self.previous_database_is_keyboard_input = False
-        self.previous_database_is_screen_share_input = False
-
-        # wait to the conn to start
-        while not self.__data_base.get_value(ValueTypes.IS_CONN_CONNECTED):
-            pass
-
+    def data_saver_update(self):
+        prev_keyboard = False
+        prev_share_Screen = False
         while self.__run:
-            database_is_keyboard_input = self.__data_base.get_value(ValueTypes.KEYBOARD_INPUT)
-            database_is_screen_share_input = self.__data_base.get_value(ValueTypes.SCREEN_SHARE_INPUT)
-            if not self.__data_base.get_value(ValueTypes.IS_CONN_CONNECTED):
-                self.disconnect_user()
+            current_keyboard = self.__client_data_saver.get_value(KeyValue.IS_CLIENT_KEYBOARD)
+            current_share_Screen = self.__client_data_saver.get_value(KeyValue.IS_CLIENT_SHARE_SCREEN)
 
-            if database_is_keyboard_input != self.previous_database_is_keyboard_input:
-                self.set_indicator(database_is_keyboard_input, self.keyboard_indicator)
+            if prev_keyboard != current_keyboard:
+                self.set_indicator(current_keyboard, self.keyboard_indicator)
+                prev_keyboard = current_keyboard
 
-            if database_is_screen_share_input != self.previous_database_is_screen_share_input:
-                self.set_indicator(database_is_screen_share_input, self.screen_share_indicator)
-
-            self.previous_database_is_keyboard_input = database_is_keyboard_input
-            self.previous_database_is_screen_share_input = database_is_screen_share_input
+            if prev_share_Screen != current_share_Screen:
+                self.set_indicator(current_share_Screen, self.screen_share_indicator)
+                prev_share_Screen = current_share_Screen
 
 
-class ClientUserGuiApplication(QApplication):
-    def __init__(self, database: ClientUserDatabase):
-        self.__database = database
-        super().__init__(sys.argv)
-        self.window = ClientUserGui(database)
-        self.window.show()
-        sys.exit(self.exec_())
 
+
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    win = ClientUserGui()
+    win.show()
+    sys.exit(app.exec_())
