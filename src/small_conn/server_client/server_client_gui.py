@@ -3,17 +3,19 @@ import threading
 import random
 import time
 
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 
-from src.small_conn.client.client_data_saver import KeyValue
+from src.small_conn.server_client.server_client_data_saver import KeyValue
 
 
 class ServerUserGui(QWidget):
-    def __init__(self, name, user_data_saver, users_data_saver):
+    def __init__(self, name, user_data_saver, users_data_saver, user_with_open_gui):
         super().__init__()
         self.__name = name
         self.__user_data_saver = user_data_saver
         self.__users_data_saver = users_data_saver
+        self.__user_with_open_gui = user_with_open_gui
 
         self.__run = True
 
@@ -75,10 +77,12 @@ class ServerUserGui(QWidget):
     # Define other methods like database_update, want_toggle_keyboard_button, want_toggle_screen_share_button here...
 
     def want_toggle_keyboard_button(self):
-        print("1")
+        current_status = self.__user_data_saver.get_value(KeyValue.IS_SERVER_KEYBOARD)
+        self.__user_data_saver.set_value(KeyValue.IS_SERVER_KEYBOARD, not current_status)
 
     def want_toggle_screen_share_button(self):
-        print("2")
+        current_status = self.__user_data_saver.get_value(KeyValue.IS_SERVER_SHARE_SCREEN)
+        self.__user_data_saver.set_value(KeyValue.IS_SERVER_SHARE_SCREEN, not current_status)
 
     def set_indicator(self, is_green, indicator):
         if is_green:
@@ -88,7 +92,6 @@ class ServerUserGui(QWidget):
 
     def disconnect(self):
         print("Disconnected!2")
-        self.__run = False
         self.__users_data_saver.remove(self.__name)
         self.close()
 
@@ -96,25 +99,42 @@ class ServerUserGui(QWidget):
 
     def closeEvent(self, event):
         print("X closing2")
+        self.__user_with_open_gui.remove(self.__name)
+        self.__run = False
         event.accept()
 
     def get_is_run(self):
         return self.__run
 
+    def set_is_run(self, is_run):
+        self.__run = is_run
+
     def data_saver_update(self):
         prev_keyboard = False
-        prev_share_Screen = False
+        prev_share_screen = False
+        prev_my_keyboard = False
+        prev_my_share_screen = False
         while self.__run:
             current_keyboard = self.__user_data_saver.get_value(KeyValue.IS_CLIENT_KEYBOARD)
-            current_share_Screen = self.__user_data_saver.get_value(KeyValue.IS_CLIENT_SHARE_SCREEN)
+            current_share_screen = self.__user_data_saver.get_value(KeyValue.IS_CLIENT_SHARE_SCREEN)
+            current_my_keyboard = self.__user_data_saver.get_value(KeyValue.IS_SERVER_KEYBOARD)
+            current_my_share_screen = self.__user_data_saver.get_value(KeyValue.IS_SERVER_SHARE_SCREEN)
 
             if prev_keyboard != current_keyboard:
                 self.set_indicator(current_keyboard, self.keyboard_indicator)
                 prev_keyboard = current_keyboard
 
-            if prev_share_Screen != current_share_Screen:
-                self.set_indicator(current_share_Screen, self.screen_share_indicator)
-                prev_share_Screen = current_share_Screen
+            if prev_share_screen != current_share_screen:
+                self.set_indicator(current_share_screen, self.screen_share_indicator)
+                prev_share_screen = current_share_screen
+
+            if prev_my_keyboard != current_my_keyboard:
+                self.set_indicator(current_my_keyboard, self.want_keyboard_indicator)
+                prev_my_keyboard = current_my_keyboard
+
+            if prev_my_share_screen != current_my_share_screen:
+                self.set_indicator(current_my_share_screen, self.want_screen_share_indicator)
+                prev_my_share_screen = current_my_share_screen
 
 
 if __name__ == "__main__":

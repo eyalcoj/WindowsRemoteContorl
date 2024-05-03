@@ -64,25 +64,19 @@ class ServerGui(QMainWindow):
     def closeEvent(self, event):
         self.__run = False
         self.listWidget.clear()
-
+        keys = self.__user_with_open_gui.get_keys()
+        for _ in keys:
+            self.__user_with_open_gui.get_value(_).close()
         event.accept()
         print("X closing")
 
     def onItemClicked(self, item):
         user_name = item.text()
-        # print(f"{self.__user_with_open_gui.get_value(user_name)}")
+        print(self.__user_with_open_gui.get_value(user_name))
         if self.__user_with_open_gui.get_value(user_name) is None:
-            # print("pjo")
-            self.__user_with_open_gui.set_value(user_name, "_")
-            win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver)
+            win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver, self.__user_with_open_gui)
+            self.__user_with_open_gui.set_value(user_name, win)
             win.show()
-            threading.Thread(target=self.check_gui, args=(win, user_name)).start()
-
-    def check_gui(self, win, user_name):
-        while win.get_is_run():
-            if not self.__run:
-                break
-        self.__user_with_open_gui.remove(user_name)
 
     def data_saver_update(self):
         previous_users_names = []

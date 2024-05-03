@@ -22,6 +22,7 @@ class ServerApplication:
     def __init__(self):
         self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__share_screen_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         self.__users_data_saver = SecuredDataSaver()
         self.__server_connection = ServerConnection(self.__server_socket, Constance.ADDR, self.__users_data_saver)
         self.__share_screen_server_connection = ShareScreenServerConnection(self.__share_screen_server_socket,
@@ -34,6 +35,8 @@ class ServerApplication:
         self.server_gui = ServerGui(self.__users_data_saver)
         self.server_gui.show()
         app.exec_()
+
+        print("done")
 
         self.__close()
 
