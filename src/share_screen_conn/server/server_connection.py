@@ -12,7 +12,7 @@ class ShareScreenServerConnection:
         self.__server_connection.settimeout(2)
         self.__addr = addr
         self.__user = user_list
-        self.__user_conn_list = SecuredDataSaver()
+        self.__users_conn_list = SecuredDataSaver()
         self.__run = True
 
     def __connect_clients(self):
@@ -31,29 +31,30 @@ class ShareScreenServerConnection:
     def user_connection(self, screen_share_client_connection: ScreenShareServerClientConnection):
         name = self.input_user_name(screen_share_client_connection)
         if name:
+            screen_share_client_connection.start_handle_data()
             threading.Thread(target=self.disconnect_user_name, args=(name,)).start()
 
     def input_user_name(self, server_client_connection: ScreenShareServerClientConnection):
-        user_name = server_client_connection.receive_data()[0]
-        self.__user_conn_list.set_value(user_name, server_client_connection)
+        user_name = server_client_connection.receive_data()[1]
+        self.__users_conn_list.set_value(user_name, server_client_connection)
         print(f"[USER CONNECTED] {user_name} {server_client_connection}")
         return user_name
 
     def disconnect_user_name(self, name):
-        server_client_connection: ScreenShareServerClientConnection = self.__user_conn_list.get_value(name)
+        server_client_connection: ScreenShareServerClientConnection = self.__users_conn_list.get_value(name)
         while server_client_connection.is_handle_connection:
             if not self.__run:
                 break
 
         server_client_connection.self_disconnect()
-        self.__user_conn_list.remove(name)
+        self.__users_conn_list.remove(name)
         print(f"[USER DISCONNECTED] {name} {server_client_connection}")
 
     def disconnect_all_user_name(self):
-        users_names = self.__user_conn_list.get_keys()
+        users_names = self.__users_conn_list.get_keys()
         for _ in users_names:
-            if self.__user_conn_list.get_value(_):
-                self.__user_conn_list.remove(_)
+            if self.__users_conn_list.get_value(_):
+                self.__users_conn_list.remove(_)
 
     def connect(self):
         print("[SERVER] connect")
@@ -70,3 +71,6 @@ class ShareScreenServerConnection:
         self.__run = False
         # self.disconnect_all_user_name()
         self.__server_connection.close()
+
+    def get_users_conn(self):
+        return self.__users_conn_list

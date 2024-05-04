@@ -1,29 +1,37 @@
 import sys
 import threading
-import random
-import time
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QMainWindow
 
+from src.share_screen_conn.server_client.screen_share_gui import ScreenShareGui
+from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
 from src.small_conn.server_client.server_client_data_saver import KeyValue
 
 
-class ServerUserGui(QWidget):
-    def __init__(self, name, user_data_saver, users_data_saver, user_with_open_gui):
+class ServerUserGui(QMainWindow):
+    open_screen_share_signal = pyqtSignal()
+
+    def __init__(self, name, user_data_saver, users_data_saver,
+                 user_with_share_screen_conn: ScreenShareServerClientConnection, users_with_share_screen_open):
         super().__init__()
         self.__name = name
         self.__user_data_saver = user_data_saver
+        self.__user_with_share_screen_conn = user_with_share_screen_conn
         self.__users_data_saver = users_data_saver
-        self.__user_with_open_gui = user_with_open_gui
+        self.__users_with_share_screen_open = users_with_share_screen_open
 
         self.__run = True
 
         self.setWindowTitle(f"{self.__name}")
         self.setFixedSize(300, 150)  # Set the fixed size of the window
 
+        # Main central widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+
         # Layout setup
-        main_layout = QVBoxLayout(self)  # Set the main layout directly to the widget
+        main_layout = QVBoxLayout(central_widget)  # Set the main layout to the central widget
 
         # Screen Share setup
         self.screen_share_button = QPushButton('Screen Share')
@@ -72,6 +80,7 @@ class ServerUserGui(QWidget):
         self.screen_share_button.clicked.connect(lambda: self.want_toggle_screen_share_button())
         self.disconnect_button.clicked.connect(self.disconnect)
 
+        self.open_screen_share_signal.connect(self.open_screen_share_gui)
         threading.Thread(target=self.data_saver_update).start()
 
     # Define other methods like database_update, want_toggle_keyboard_button, want_toggle_screen_share_button here...
@@ -99,7 +108,7 @@ class ServerUserGui(QWidget):
 
     def closeEvent(self, event):
         print("X closing2")
-        self.__user_with_open_gui.remove(self.__name)
+        self.__users_with_share_screen_conn.remove(self.__name)
         self.__run = False
         event.accept()
 
@@ -108,6 +117,12 @@ class ServerUserGui(QWidget):
 
     def set_is_run(self, is_run):
         self.__run = is_run
+
+    def open_screen_share_gui(self):
+        self.win = ScreenShareGui(self.__user_with_share_screen_conn, self.__name, self.__users_with_share_screen_open)
+        self.__user_with_share_screen_conn.send_connect_request()
+        self.win.show()
+
 
     def data_saver_update(self):
         prev_keyboard = False
@@ -135,6 +150,11 @@ class ServerUserGui(QWidget):
             if prev_my_share_screen != current_my_share_screen:
                 self.set_indicator(current_my_share_screen, self.want_screen_share_indicator)
                 prev_my_share_screen = current_my_share_screen
+
+            if current_share_screen and current_my_share_screen:
+                if self.__users_with_share_screen_open.get_value(self.__name) is None:
+                    self.__users_with_share_screen_open.set_value(self.__name, "")
+                    self.open_screen_share_signal.emit()
 
 
 if __name__ == "__main__":

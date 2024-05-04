@@ -32,11 +32,9 @@ class ServerApplication:
 
         app = QApplication(sys.argv)
 
-        self.server_gui = ServerGui(self.__users_data_saver)
+        self.server_gui = ServerGui(self.__users_data_saver, self.__share_screen_server_connection.get_users_conn())
         self.server_gui.show()
         app.exec_()
-
-        print("done")
 
         self.__close()
 

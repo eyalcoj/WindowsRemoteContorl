@@ -6,12 +6,12 @@ from src.small_conn.server_client.server_client_data_saver import ServerClientDa
 class ServerClientConnection(SocketConnection):
     def __init__(self, server_client_socket, addr, server_client_data_saver: ServerClientDataSaver):
         super().__init__(server_client_socket, addr)
+        self.start_handle_data()
         self.__server_client_data_saver = server_client_data_saver
         self.__user_name = ["", 0]
         self.is_input_name = False
 
     def _handle_data(self, packet_type, data):
-        print(packet_type)
         super()._handle_data(packet_type, data)
         if not self.is_input_name:
             if PacketType(packet_type) == PacketType.NAME_INPUT:

@@ -10,12 +10,14 @@ from src.utils.utils import find_changes_between_lists
 
 
 class ServerGui(QMainWindow):
-    def __init__(self, users_data_saver: SecuredDataSaver):
+    def __init__(self, users_data_saver: SecuredDataSaver, user_with_share_screen: SecuredDataSaver):
         super().__init__()
         self.__run = True
         self.__users_data_saver = users_data_saver
+        self.__users_with_share_screen = user_with_share_screen
         self.initUI()
         self.__user_with_open_gui = SecuredDataSaver()
+        self.__users_with_share_screen_open = SecuredDataSaver()
 
         threading.Thread(target=self.data_saver_update).start()
 
@@ -30,7 +32,7 @@ class ServerGui(QMainWindow):
 
         # List widget
         self.listWidget = QListWidget()
-        self.listWidget.itemDoubleClicked.connect(self.onItemClicked)  # Connect the itemClicked signal to the slot
+        self.listWidget.itemDoubleClicked.connect(self.on_item_clicked)  # Connect the itemClicked signal to the slot
         layout.addWidget(self.listWidget)
 
         # Disconnect button setup
@@ -70,11 +72,13 @@ class ServerGui(QMainWindow):
         event.accept()
         print("X closing")
 
-    def onItemClicked(self, item):
+    def on_item_clicked(self, item):
         user_name = item.text()
         print(self.__user_with_open_gui.get_value(user_name))
         if self.__user_with_open_gui.get_value(user_name) is None:
-            win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver, self.__user_with_open_gui)
+            print(self.__users_with_share_screen.__str__())
+            win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver,
+                                self.__users_with_share_screen.get_value(user_name), self.__users_with_share_screen_open)
             self.__user_with_open_gui.set_value(user_name, win)
             win.show()
 

@@ -35,7 +35,8 @@ class ClientApplication:
         self.__client_connection_warper = ClientConnectionWarper(self.__client_connection)
 
         self.__share_screen_client_connection = ScreenShareClientServerConnection(self.__share_screen_client_socket,
-                                                                                  Constance.ADDR, self.__client_data_saver)
+                                                                                  Constance.ADDR_SHARE_SCREEN,
+                                                                                  self.__client_data_saver)
         self.__share_screen_client_connection_wraper = ShareScreenClientConnectionWraper(
             self.__share_screen_client_connection)
 
@@ -53,6 +54,7 @@ class ClientApplication:
         user_name = self.name_input_gui.get_name()
 
         if user_name != "":
+            self.__share_screen_client_connection.send_name(user_name)
             self.client_user_gui = ClientUserGui(user_name, self.__client_data_saver)
             self.client_user_gui.show()
             t = threading.Thread(target=self.check_conn, args=(self.client_user_gui,))

@@ -10,27 +10,34 @@ class SocketConnection(ABC):
         self._socket = socket
         self._addr = addr
         self._handle_connection_thread = threading.Thread(target=self._handle_connection)
-        self.is_handle_connection = None
-        self._start_handle_data()
+        self.is_handle_connection = False
+        self.counter = 0
 
     def receive_data(self):
-        packet_type, data = protocol.recv2(self._socket)
+        recv = protocol.recv2(self._socket)
+        print(recv)
+        packet_type, data = recv
         if packet_type != PacketType.ERROR:
-            print(f"[RECEIVE_DATA] receive from {self._addr}: {(packet_type, data)}")
+            if packet_type == PacketType.IMG:
+                if self.counter == 0:
+                    self.counter += 1
+                    print(f"[RECEIVE_DATA] receive from {self._addr}: {(packet_type, data)}")
+            pass
         return packet_type, data
 
-    def send_data(self, packet_type: PacketType, data):
-        protocol.send2(packet_type, data, self._socket)
+    def send_data(self, packet_type: PacketType, data, is_bytes=False):
+        protocol.send2(packet_type, data, self._socket, is_bytes)
         print(f"[SEND_DATA] send to {self._addr}: {packet_type, data}")
 
     def _handle_connection(self):
         print(f"\n[NEW CONNECTION] {self._addr} connected.")
-        while self.is_handle_connection:
-            packet_type, data = self.receive_data()
-            if packet_type != PacketType.ERROR:
-                self._handle_data(packet_type, data)
+        while True:
+            if self.is_handle_connection:
+                packet_type, data = self.receive_data()
+                if packet_type != PacketType.ERROR:
+                    self._handle_data(packet_type, data)
 
-    def _start_handle_data(self):
+    def start_handle_data(self):
         self.is_handle_connection = True
         self._handle_connection_thread.start()
 

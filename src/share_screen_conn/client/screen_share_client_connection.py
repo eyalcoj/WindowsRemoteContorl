@@ -6,6 +6,7 @@ from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
 class ScreenShareClientServerConnection(SocketConnection):
     def __init__(self, client_socket, addr, client_data_saver: ClientDataSaver):
         super().__init__(client_socket, addr)
+        self.start_handle_data()
         self.__client_data_saver = client_data_saver
         self.__is_passing_share_screen = False
 
@@ -18,10 +19,10 @@ class ScreenShareClientServerConnection(SocketConnection):
                 self.__is_passing_share_screen = False
 
     def send_screen_share_frame(self, img_data):
-        self.send_data(PacketType.IMG, img_data)
+        self.send_data(PacketType.IMG, img_data, is_bytes=True)
 
     def send_name(self, name):
-        self.send_data(name, PacketType.NAME_INPUT)
+        self.send_data(PacketType.NAME_INPUT, name)
 
     def is_passing_share_screen(self):
         return self.__is_passing_share_screen
