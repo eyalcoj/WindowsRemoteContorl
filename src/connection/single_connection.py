@@ -31,11 +31,10 @@ class SocketConnection(ABC):
 
     def _handle_connection(self):
         print(f"\n[NEW CONNECTION] {self._addr} connected.")
-        while True:
-            if self.is_handle_connection:
-                packet_type, data = self.receive_data()
-                if packet_type != PacketType.ERROR:
-                    self._handle_data(packet_type, data)
+        while self.is_handle_connection:
+            packet_type, data = self.receive_data()
+            if packet_type != PacketType.ERROR:
+                self._handle_data(packet_type, data)
 
     def start_handle_data(self):
         self.is_handle_connection = True

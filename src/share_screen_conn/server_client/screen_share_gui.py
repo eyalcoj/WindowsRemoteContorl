@@ -6,14 +6,18 @@ from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 
 from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
+from src.small_conn.server_client.server_client_data_saver import KeyValue
+
 
 class ScreenShareGui(QWidget):
     update_image_signal = pyqtSignal(QPixmap)  # Define a signal that carries a QPixmap object
 
-    def __init__(self, server_client_connection: ScreenShareServerClientConnection, name, users_with_share_screen_open):
+    def __init__(self, server_client_connection: ScreenShareServerClientConnection, name, users_with_share_screen_open,
+                 user_data_saver):
         super().__init__()
         self.__server_client_connection = server_client_connection
         self.__users_with_share_screen_open = users_with_share_screen_open
+        self.__user_data_saver = user_data_saver
         self.__name = name
 
         self.setWindowTitle(name)
@@ -43,6 +47,8 @@ class ScreenShareGui(QWidget):
 
     def stop(self):
         self.__run = False
-        if self.__name in self.__users_with_share_screen_open:
-            self.__users_with_share_screen_open.remove(self.__name)
         self.close()
+
+    def closeEvent(self, event):
+        self.__user_data_saver.set_value(KeyValue.IS_SERVER_SHARE_SCREEN, False)
+

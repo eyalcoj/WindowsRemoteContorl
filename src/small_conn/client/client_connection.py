@@ -20,7 +20,6 @@ class ClientServerConnection(SocketConnection):
             print(data)
         if not self.is_input_name:
             if PacketType(packet_type) == PacketType.NAME_INPUT:
-                print(f"sdfd{data}")
                 self.__name_input_feedback[0] = data
                 self.__name_input_feedback[1] += 1
 

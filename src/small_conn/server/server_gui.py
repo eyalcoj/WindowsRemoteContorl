@@ -61,7 +61,6 @@ class ServerGui(QMainWindow):
         print("Disconnected!")
         self.close()
 
-    #     it goes to the closeEvent before closing
 
     def closeEvent(self, event):
         self.__run = False
@@ -78,7 +77,8 @@ class ServerGui(QMainWindow):
         if self.__user_with_open_gui.get_value(user_name) is None:
             print(self.__users_with_share_screen.__str__())
             win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver,
-                                self.__users_with_share_screen.get_value(user_name), self.__users_with_share_screen_open)
+                                self.__users_with_share_screen.get_value(user_name), self.__users_with_share_screen_open
+                                , self.__user_with_open_gui)
             self.__user_with_open_gui.set_value(user_name, win)
             win.show()
 

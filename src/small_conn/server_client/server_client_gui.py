@@ -11,16 +11,19 @@ from src.small_conn.server_client.server_client_data_saver import KeyValue
 
 class ServerUserGui(QMainWindow):
     open_screen_share_signal = pyqtSignal()
+    close_screen_share_signal = pyqtSignal()
 
     def __init__(self, name, user_data_saver, users_data_saver,
-                 user_with_share_screen_conn: ScreenShareServerClientConnection, users_with_share_screen_open):
+                 user_with_share_screen_conn: ScreenShareServerClientConnection, users_with_share_screen_open,
+                 user_with_open_gui):
         super().__init__()
         self.__name = name
         self.__user_data_saver = user_data_saver
         self.__user_with_share_screen_conn = user_with_share_screen_conn
         self.__users_data_saver = users_data_saver
         self.__users_with_share_screen_open = users_with_share_screen_open
-
+        self.__user_with_open_gui = user_with_open_gui
+        self.win = None
         self.__run = True
 
         self.setWindowTitle(f"{self.__name}")
@@ -81,6 +84,7 @@ class ServerUserGui(QMainWindow):
         self.disconnect_button.clicked.connect(self.disconnect)
 
         self.open_screen_share_signal.connect(self.open_screen_share_gui)
+        self.close_screen_share_signal.connect(self.close_screen_share_gui)
         threading.Thread(target=self.data_saver_update).start()
 
     # Define other methods like database_update, want_toggle_keyboard_button, want_toggle_screen_share_button here...
@@ -108,8 +112,10 @@ class ServerUserGui(QMainWindow):
 
     def closeEvent(self, event):
         print("X closing2")
-        self.__users_with_share_screen_conn.remove(self.__name)
         self.__run = False
+        self.__user_with_open_gui.remove(self.__name)
+        self.win.stop()
+        self.__user_with_share_screen_conn.send_disconnect_request()
         event.accept()
 
     def get_is_run(self):
@@ -119,10 +125,14 @@ class ServerUserGui(QMainWindow):
         self.__run = is_run
 
     def open_screen_share_gui(self):
-        self.win = ScreenShareGui(self.__user_with_share_screen_conn, self.__name, self.__users_with_share_screen_open)
+        self.win = ScreenShareGui(self.__user_with_share_screen_conn, self.__name, self.__users_with_share_screen_open,
+                                  self.__user_data_saver)
         self.__user_with_share_screen_conn.send_connect_request()
         self.win.show()
 
+    def close_screen_share_gui(self):
+        self.win.stop()
+        self.__user_with_share_screen_conn.send_disconnect_request()
 
     def data_saver_update(self):
         prev_keyboard = False
@@ -153,8 +163,13 @@ class ServerUserGui(QMainWindow):
 
             if current_share_screen and current_my_share_screen:
                 if self.__users_with_share_screen_open.get_value(self.__name) is None:
-                    self.__users_with_share_screen_open.set_value(self.__name, "")
+                    self.__users_with_share_screen_open.set_value(self.__name, "_")
                     self.open_screen_share_signal.emit()
+            else:
+                user = self.__users_with_share_screen_open.get_value(self.__name)
+                if user is not None and user != "":
+                    self.__users_with_share_screen_open.remove(self.__name)
+                    self.close_screen_share_signal.emit()
 
 
 if __name__ == "__main__":

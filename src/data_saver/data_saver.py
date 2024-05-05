@@ -14,7 +14,7 @@ class DataSaver:
 
     def remove(self, key):
         if self.dict.get(key):
-            del self.dict[key]
+            self.dict.pop(key)
 
     def __str__(self):
         text = ""
