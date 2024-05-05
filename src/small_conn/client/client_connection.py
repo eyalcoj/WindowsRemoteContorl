@@ -2,6 +2,7 @@ import threading
 
 from src.connection.protocol import PacketType
 from src.connection.single_connection import SocketConnection
+from src.keys import key_inserter
 from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
 
 
@@ -18,10 +19,14 @@ class ClientServerConnection(SocketConnection):
         super()._handle_data(packet_type, data)
         if PacketType(packet_type) == PacketType.TEXT:
             print(data)
+
         if not self.is_input_name:
             if PacketType(packet_type) == PacketType.NAME_INPUT:
                 self.__name_input_feedback[0] = data
                 self.__name_input_feedback[1] += 1
+
+        if PacketType(packet_type) == PacketType.KEYBOARD_KEY:
+            key_inserter.send_key(data)
 
     def name_input_request(self, user_name):
         self.send_data(PacketType.NAME_INPUT, {"user name": user_name})

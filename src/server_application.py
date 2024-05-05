@@ -5,6 +5,7 @@ import threading
 from PyQt5.QtWidgets import QApplication
 
 from src.data_saver.secured_data_saver import SecuredDataSaver
+from src.keys.key_collector import KeyCollector
 from src.share_screen_conn.server.server_connection import ShareScreenServerConnection
 from src.small_conn.server.server_connection import ServerConnection
 from src.small_conn.server.server_gui import ServerGui
@@ -31,6 +32,7 @@ class ServerApplication:
         self.__start()
 
         app = QApplication(sys.argv)
+
 
         self.server_gui = ServerGui(self.__users_data_saver, self.__share_screen_server_connection.get_users_conn())
         self.server_gui.show()

@@ -1,6 +1,9 @@
+import threading
+
 from src.connection.protocol import PacketType
 from src.connection.single_connection import SocketConnection
-from src.small_conn.server_client.server_client_data_saver import ServerClientDataSaver
+from src.keys.key_collector import KeyCollector
+from src.small_conn.server_client.server_client_data_saver import ServerClientDataSaver, KeyValue
 
 
 class ServerClientConnection(SocketConnection):
@@ -10,6 +13,7 @@ class ServerClientConnection(SocketConnection):
         self.__server_client_data_saver = server_client_data_saver
         self.__user_name = ["", 0]
         self.is_input_name = False
+        threading.Thread(target=self.data_saver_update).start()
 
     def _handle_data(self, packet_type, data):
         super()._handle_data(packet_type, data)
@@ -21,6 +25,30 @@ class ServerClientConnection(SocketConnection):
             print(data)
         if PacketType(packet_type) == PacketType.DATA_SAVER_UPDATE:
             self.__server_client_data_saver.set_value(data[0], data[1])
+
+    def data_saver_update(self):
+        is_state_listening_for_keys = False
+        keyboard_keys: KeyCollector = self.__server_client_data_saver.get_value(KeyValue.KEY_COLLECTOR)
+
+        while self.is_handle_connection:
+            print("gg")
+
+            if self.__server_client_data_saver.get_value(
+                    KeyValue.IS_SERVER_KEYBOARD) and self.__server_client_data_saver.get_value(
+                    KeyValue.IS_CLIENT_KEYBOARD):
+                if not is_state_listening_for_keys:
+                    print("before")
+                    keyboard_keys.start_listening()
+                    print("after")
+                    is_state_listening_for_keys = True
+                q = keyboard_keys.get_queue()
+                if not q.empty():
+                    self.send_data(PacketType.KEYBOARD_KEY, keyboard_keys.get_queue().get())
+
+            else:
+                if is_state_listening_for_keys:
+                    keyboard_keys.stop_listening()
+                    is_state_listening_for_keys = False
 
     def name_input_response(self, text):
         self.send_data(PacketType.NAME_INPUT, text)

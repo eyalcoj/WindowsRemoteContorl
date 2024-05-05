@@ -19,6 +19,7 @@ class PacketType(Enum):
     IMG = 5
     SHARE_SCREEN_REQUEST = 6
     DATA_SAVER_UPDATE = 7
+    KEYBOARD_KEY = 8
 
 
 def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False):
@@ -36,6 +37,7 @@ def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False)
         conn.sendall(packet_length_encoded + packet_json.encode(Constants.FORMAT))
     except Exception as e:
         print(f"[SEND2 ERROR]: {e}")
+
 
 def recv2(conn: socket.socket):
     try:
