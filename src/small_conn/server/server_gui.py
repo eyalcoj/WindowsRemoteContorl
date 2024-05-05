@@ -73,9 +73,7 @@ class ServerGui(QMainWindow):
 
     def on_item_clicked(self, item):
         user_name = item.text()
-        print(self.__user_with_open_gui.get_value(user_name))
         if self.__user_with_open_gui.get_value(user_name) is None:
-            print(self.__users_with_share_screen.__str__())
             win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver,
                                 self.__users_with_share_screen.get_value(user_name), self.__users_with_share_screen_open
                                 , self.__user_with_open_gui)

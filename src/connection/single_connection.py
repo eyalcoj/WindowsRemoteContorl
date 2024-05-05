@@ -11,17 +11,14 @@ class SocketConnection(ABC):
         self._addr = addr
         self._handle_connection_thread = threading.Thread(target=self._handle_connection)
         self.is_handle_connection = False
-        self.counter = 0
 
     def receive_data(self):
         recv = protocol.recv2(self._socket)
         print(recv)
         packet_type, data = recv
         if packet_type != PacketType.ERROR:
-            if packet_type == PacketType.IMG:
-                if self.counter == 0:
-                    self.counter += 1
-                    print(f"[RECEIVE_DATA] receive from {self._addr}: {(packet_type, data)}")
+            if packet_type != PacketType.IMG:
+                print(f"[RECEIVE_DATA] receive from {self._addr}: {(packet_type, data)}")
             pass
         return packet_type, data
 

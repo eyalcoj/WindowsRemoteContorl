@@ -32,7 +32,6 @@ class ShareScreenClientConnectionWraper:
             if self.__share_screen_client_connection.is_passing_share_screen():
                 frame = self.frame_build()
                 self.__share_screen_client_connection.send_screen_share_frame(frame)
-                print("shalom")
 
     def open(self):
         self.__share_screen_client_connection.connect()

@@ -40,25 +40,17 @@ class NameInputGUI(QWidget):
         self.setLayout(layout)
 
     def on_click(self):
-        # Get the text from the QLineEdit widget
         name = self.name_input.text()
         if name.replace(" ", "") != "":
-            print("000")
             self.client_connection_warper.input_user_name(name)
-            print("111")
             feedback = self.client_connection_warper.feedback
-            print("222")
             self.result_label.setText(f"{feedback}")
-            print("333")
             QApplication.processEvents()
-            print("444")
             if feedback == "The name is all ready in use":
                 pass
             elif feedback == "The name is not in use":
                 self.name = name
                 self.close_gui()
-            print("555")
-        # Set the text of result_label to input_text
 
     def close_gui(self):
         print("Close GUI!")

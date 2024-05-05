@@ -8,15 +8,10 @@ class ClientConnectionWarper:
         self.feedback_number = 0
 
     def input_user_name(self, name):
-        print("1111")
         self.__client_connection.name_input_request(name)
-        print("2222")
         feedback = self.__client_connection.get_name_input_feedback()
-        print(feedback)
-        print("3333")
         while self.feedback_number == feedback[1]:
             feedback = self.__client_connection.get_name_input_feedback()
-        print("4444")
 
         self.feedback_number = feedback[1]
         self.feedback = feedback[0]

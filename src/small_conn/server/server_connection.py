@@ -110,7 +110,6 @@ class ServerConnection:
             added, removed = find_changes_between_lists(previous_users_names, users_names)
             if len(removed) > 0:
                 for _ in removed:
-                    print("remove")
                     self.remove_user_name(_)
 
             previous_users_names = users_names

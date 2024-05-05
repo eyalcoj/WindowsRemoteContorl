@@ -19,7 +19,6 @@ class ClientServerConnection(SocketConnection):
         super()._handle_data(packet_type, data)
         if PacketType(packet_type) == PacketType.TEXT:
             print(data)
-
         if not self.is_input_name:
             if PacketType(packet_type) == PacketType.NAME_INPUT:
                 self.__name_input_feedback[0] = data

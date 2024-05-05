@@ -31,15 +31,11 @@ class ServerClientConnection(SocketConnection):
         keyboard_keys: KeyCollector = self.__server_client_data_saver.get_value(KeyValue.KEY_COLLECTOR)
 
         while self.is_handle_connection:
-            print("gg")
-
             if self.__server_client_data_saver.get_value(
                     KeyValue.IS_SERVER_KEYBOARD) and self.__server_client_data_saver.get_value(
                     KeyValue.IS_CLIENT_KEYBOARD):
                 if not is_state_listening_for_keys:
-                    print("before")
                     keyboard_keys.start_listening()
-                    print("after")
                     is_state_listening_for_keys = True
                 q = keyboard_keys.get_queue()
                 if not q.empty():
