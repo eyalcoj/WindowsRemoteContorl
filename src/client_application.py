@@ -40,6 +40,9 @@ class ClientApplication:
         self.__share_screen_client_connection_wraper = ShareScreenClientConnectionWraper(
             self.__share_screen_client_connection)
 
+        self.t1 = None
+        self.t2 = None
+
         self.__client_connection_warper.open()
         self.__share_screen_client_connection_wraper.open()
 
@@ -47,30 +50,46 @@ class ClientApplication:
 
         self.name_input_gui = NameInputGUI(self.__client_connection_warper)
         self.name_input_gui.show()
-        t = threading.Thread(target=self.check_conn, args=(self.name_input_gui,))
-        t.start()
+        self.t1 = threading.Thread(target=self.check_conn, args=(self.name_input_gui,))
+        self.t1.start()
+
         app.exec_()
 
         user_name = self.name_input_gui.get_name()
-
         if user_name != "":
             self.__share_screen_client_connection.send_name(user_name)
             self.client_user_gui = ClientUserGui(user_name, self.__client_data_saver)
             self.client_user_gui.show()
-            t = threading.Thread(target=self.check_conn, args=(self.client_user_gui,))
-            t.start()
+            self.t2 = threading.Thread(target=self.check_conn, args=(self.client_user_gui,))
+            self.t2.start()
             app.exec_()
+        else:
+            self.__share_screen_client_connection.send_name("haha")
+
+
+
+
 
         self.__close()
 
     def check_conn(self, gui):
         while self.__client_connection.is_handle_connection:
-            pass
+            if not self.__run:
+                break
         gui.close()
 
     def __close(self):
         self.__client_connection_warper.close()
         self.__share_screen_client_connection_wraper.close()
+        self.__run = False
+
+        if self.t1.is_alive():
+            self.t1.join()
+
+        if self.t2 and self.t2.is_alive():
+            self.t2.join()
+
+        sys.exit()
 
     # def __start(self):
     #     self.__client_connection_warper.open()

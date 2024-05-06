@@ -75,10 +75,11 @@ class ServerConnection:
 
     def remove_user_name(self, name):
         server_client_connection: ServerClientConnection = self.__user_conn_list.get_value(name)
-        server_client_connection.self_disconnect()
-        self.__user_list.remove(name)
-        self.__user_conn_list.remove(name)
-        print(f"[USER REMOVE] {name} {server_client_connection}")
+        if server_client_connection:
+            server_client_connection.self_disconnect()
+            self.__user_list.remove(name)
+            self.__user_conn_list.remove(name)
+            print(f"[USER REMOVE] {name} {server_client_connection}")
 
     def disconnect_all_user_name(self):
         users_names = self.__user_list.get_keys()

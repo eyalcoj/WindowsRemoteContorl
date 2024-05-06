@@ -14,7 +14,6 @@ class SocketConnection(ABC):
 
     def receive_data(self):
         recv = protocol.recv2(self._socket)
-        print(recv)
         packet_type, data = recv
         if packet_type != PacketType.ERROR:
             if packet_type != PacketType.IMG:
