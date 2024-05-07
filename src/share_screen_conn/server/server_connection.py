@@ -46,7 +46,7 @@ class ShareScreenServerConnection:
             if not self.__run:
                 break
 
-        server_client_connection.other_disconnect()
+        server_client_connection.self_disconnect()
         self.__users_conn_list.remove(name)
         print(f"[USER DISCONNECTED] {name} {server_client_connection}")
 

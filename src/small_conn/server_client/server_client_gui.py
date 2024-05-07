@@ -104,16 +104,11 @@ class ServerUserGui(QMainWindow):
         self.close()
 
     def closeEvent(self, event):
-        print("X closing2")
         self.__run = False
-        print("1")
         self.__user_with_open_gui.remove(self.__name)
-        print("2")
         if self.win:
             self.win.stop()
-        print("3")
         self.__user_with_share_screen_conn.send_disconnect_request()
-        print("4")
         event.accept()
 
     def get_is_run(self):
@@ -158,7 +153,6 @@ class ServerUserGui(QMainWindow):
             if prev_my_share_screen != current_my_share_screen:
                 self.set_indicator(current_my_share_screen, self.want_screen_share_indicator)
                 prev_my_share_screen = current_my_share_screen
-
             if current_share_screen and current_my_share_screen:
                 if self.__users_with_share_screen_open.get_value(self.__name) is None:
                     self.__users_with_share_screen_open.set_value(self.__name, "_")
@@ -167,7 +161,9 @@ class ServerUserGui(QMainWindow):
                 user = self.__users_with_share_screen_open.get_value(self.__name)
                 if user is not None and user != "":
                     self.__users_with_share_screen_open.remove(self.__name)
-                    self.close_screen_share_signal.emit()
+                    if self.win:
+                        self.close_screen_share_signal.emit()
+
 
 
 if __name__ == "__main__":

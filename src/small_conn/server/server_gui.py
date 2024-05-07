@@ -79,6 +79,7 @@ class ServerGui(QMainWindow):
                                 , self.__user_with_open_gui)
             self.__user_with_open_gui.set_value(user_name, win)
             win.show()
+            print("on_item_clicked")
 
     def data_saver_update(self):
         previous_users_names = []

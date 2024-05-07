@@ -9,7 +9,10 @@ class KeyCollector:
 
     def __create_listener(self):
         # Create a new listener instance
-        self.listener = Listener(on_press=self.on_press)
+        print("befor1")
+        # self.listener = Listener(on_press=self.on_press)
+        self.listener = Listener()
+        print("after1")
 
     def on_press(self, key):
         # Add the key pressed to the queue
@@ -21,9 +24,8 @@ class KeyCollector:
             self.key_queue.put(key.name)
 
     def start_listening(self):
-        if not self.listener:
+        if not self.listener or not self.listener.is_alive():
             self.__create_listener()
-        if not self.listener.running:
             self.listener.start()
 
     def stop_listening(self):
