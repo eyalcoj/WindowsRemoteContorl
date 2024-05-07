@@ -8,21 +8,28 @@ class SecuredDataSaver(DataSaver):
 
     def __init__(self):
         super().__init__()
+        self.event = threading.Event()
+        self.event.set()
         self.lock = threading.Lock()
 
     def get_value(self, key):
-        with self.lock:  # Ensure that the lock is always released
-            return super().get_value(key)
+        self.event.wait()
+        return super().get_value(key)
 
     def get_keys(self):
-        with self.lock:
-            return super().get_keys()
+        self.event.wait()
+        return super().get_keys()
 
     def set_value(self, key, value):
-        with self.lock:
-            super().set_value(key, value)
+        self.lock.acquire()
+        self.event.clear()
+        super().set_value(key, value)
+        self.lock.release()
+        self.event.set()
 
     def remove(self, key):
-        with self.lock:
-            super().remove(key)
-
+        self.lock.acquire()
+        self.event.clear()
+        super().remove(key)
+        self.lock.release()
+        self.event.set()
