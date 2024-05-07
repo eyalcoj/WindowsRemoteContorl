@@ -37,6 +37,7 @@ class SocketConnection(ABC):
         while self.is_handle_connection:
             packet_type, data = self.receive_data()
             if packet_type != PacketType.ERROR:
+                print(f"dgdf{packet_type, data}")
                 self._handle_data(packet_type, data)
 
     def start_handle_data(self):

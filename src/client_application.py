@@ -66,10 +66,6 @@ class ClientApplication:
         else:
             self.__share_screen_client_connection.send_name("haha")
 
-
-
-
-
         self.__close()
 
     def check_conn(self, gui):

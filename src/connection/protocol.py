@@ -25,7 +25,7 @@ class PacketType(Enum):
 
 
 def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False, encryption_key=None):
-    # try:
+    try:
         if is_bytes:
             encoded_payload = base64.b64encode(payload).decode(Constants.FORMAT)  # Encode bytes to Base64 string
             packet_dict = {"type": packet_type.value, "data": encoded_payload, "is_bytes": True}
@@ -43,9 +43,8 @@ def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False,
             conn.sendall(encrypt_data)
         else:
             conn.sendall(packet_json.encode(Constants.FORMAT))
-
-    # except Exception as e:
-    #     print(f"[SEND2 ERROR]: {e}")
+    except Exception as e:
+        print(f"[SEND2 ERROR]: {e}")
 
 
 def recv2(conn: socket.socket, encryption_key=None):

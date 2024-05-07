@@ -27,7 +27,6 @@ class ServerConnection:
         except OSError:
             pass
         else:
-            pass
             server_client_connection = ServerClientConnection(server_client_socket, addr, ServerClientDataSaver())
             user_connection_thread = threading.Thread(target=self.user_connection, args=(server_client_connection,))
             user_connection_thread.start()

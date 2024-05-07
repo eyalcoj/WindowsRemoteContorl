@@ -15,7 +15,6 @@ class ClientServerConnection(SocketConnection):
         self.__client_data_saver = client_data_saver
         self.__name_input_feedback = ["", 0]
         self.is_input_name = False
-        threading.Thread(target=self.data_saver_update).start()
 
     def _handle_data(self, packet_type, data):
         super()._handle_data(packet_type, data)
@@ -65,3 +64,5 @@ class ClientServerConnection(SocketConnection):
         client_public_key = int(self.__client_socket.recv(data_size).decode('utf-8'))
         self.encryption_key = client_dh.generate_shared_secret(client_public_key)
         self.start_handle_data()
+        threading.Thread(target=self.data_saver_update).start()
+

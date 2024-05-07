@@ -19,6 +19,5 @@ class ClientConnectionWarper:
     def close(self):
         self.__client_connection.self_disconnect()
 
-
     def open(self):
         self.__client_connection.connect()

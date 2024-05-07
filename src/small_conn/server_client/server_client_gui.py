@@ -99,18 +99,21 @@ class ServerUserGui(QMainWindow):
             indicator.setStyleSheet("background-color: red; border-radius: 10px;")
 
     def disconnect(self):
-        print("Disconnected!2")
+        print("Disconnected!24")
         self.__users_data_saver.remove(self.__name)
         self.close()
-
-    #     it goes to the closeEvent before closing
 
     def closeEvent(self, event):
         print("X closing2")
         self.__run = False
+        print("1")
         self.__user_with_open_gui.remove(self.__name)
-        self.win.stop()
+        print("2")
+        if self.win:
+            self.win.stop()
+        print("3")
         self.__user_with_share_screen_conn.send_disconnect_request()
+        print("4")
         event.accept()
 
     def get_is_run(self):

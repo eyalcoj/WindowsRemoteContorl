@@ -6,7 +6,6 @@ class KeyCollector:
     def __init__(self):
         self.key_queue = Queue()
         self.listener = None
-        self.__create_listener()
 
     def __create_listener(self):
         # Create a new listener instance

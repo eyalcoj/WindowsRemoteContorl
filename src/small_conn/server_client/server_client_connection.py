@@ -10,8 +10,9 @@ from src.small_conn.server_client.server_client_data_saver import ServerClientDa
 
 class ServerClientConnection(SocketConnection):
     def __init__(self, server_client_socket, addr, server_client_data_saver: ServerClientDataSaver):
+        print("dsf")
         super().__init__(server_client_socket, addr)
-
+        print("start")
         server_dh = DiffieHellman()
         server_dh.generate_public_key()
         data = str(server_dh.public_key)
