@@ -47,7 +47,7 @@ class ClientApplication:
         self.__share_screen_client_connection_wraper.open()
 
         app = QApplication(sys.argv)
-
+        print("dgsdsgdg")
         self.name_input_gui = NameInputGUI(self.__client_connection_warper)
         self.name_input_gui.show()
         self.t1 = threading.Thread(target=self.check_conn, args=(self.name_input_gui,))

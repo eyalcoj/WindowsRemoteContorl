@@ -68,11 +68,6 @@ class ServerUserGui(QMainWindow):
         keyboard_row.setStretch(0, 1)
         main_layout.addLayout(keyboard_row)
 
-        # Label for keyboard input
-        self.keyboard_output_label = QLabel("Input:")
-        self.keyboard_output_label.setWordWrap(True)
-        main_layout.addWidget(self.keyboard_output_label)
-
         # Disconnect button
         self.disconnect_button = QPushButton('Disconnect')
         main_layout.addWidget(self.disconnect_button)

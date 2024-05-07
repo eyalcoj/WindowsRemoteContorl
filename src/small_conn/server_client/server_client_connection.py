@@ -1,5 +1,7 @@
 import threading
 
+from diffiehellman.diffiehellman import DiffieHellman
+
 from src.connection.protocol import PacketType
 from src.connection.single_connection import SocketConnection
 from src.keys.key_collector import KeyCollector
@@ -9,6 +11,21 @@ from src.small_conn.server_client.server_client_data_saver import ServerClientDa
 class ServerClientConnection(SocketConnection):
     def __init__(self, server_client_socket, addr, server_client_data_saver: ServerClientDataSaver):
         super().__init__(server_client_socket, addr)
+
+        server_dh = DiffieHellman()
+        server_dh.generate_public_key()
+        data = str(server_dh.public_key)
+        packet_length_encoded = str(len(data)).encode('utf-8')
+        packet_length_encoded += b' ' * (5 - len(data))
+        server_client_socket.sendall(packet_length_encoded)
+        server_client_socket.sendall(data.encode('utf-8'))
+        data_size = int(server_client_socket.recv(4).decode('utf-8'))
+        print(f"fsfgfdgfd{data_size}fdgdfg")
+        server_public_key = int(server_client_socket.recv(data_size).decode('utf-8'))
+        print(f"fgdfdgdf{server_public_key}")
+        print(f"fgdfdgdf{type(server_public_key)}")
+        self.encryption_key = server_dh.generate_shared_secret(server_public_key)
+
         self.start_handle_data()
         self.__server_client_data_saver = server_client_data_saver
         self.__user_name = ["", 0]

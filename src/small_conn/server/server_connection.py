@@ -5,6 +5,7 @@ from src.data_saver.secured_data_saver import SecuredDataSaver
 from src.small_conn.server_client.server_client_connection import ServerClientConnection
 from src.small_conn.server_client.server_client_data_saver import ServerClientDataSaver
 from src.utils.utils import find_changes_between_lists
+from diffiehellman.diffiehellman import DiffieHellman
 
 
 class ServerConnection:

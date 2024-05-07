@@ -11,9 +11,13 @@ class SocketConnection(ABC):
         self._addr = addr
         self._handle_connection_thread = threading.Thread(target=self._handle_connection)
         self.is_handle_connection = False
+        self.encryption_key = None
 
     def receive_data(self):
-        recv = protocol.recv2(self._socket)
+        if self.encryption_key:
+            recv = protocol.recv2(self._socket, self.encryption_key)
+        else:
+            recv = protocol.recv2(self._socket)
         packet_type, data = recv
         if packet_type != PacketType.ERROR:
             if packet_type != PacketType.IMG:
@@ -22,7 +26,10 @@ class SocketConnection(ABC):
         return packet_type, data
 
     def send_data(self, packet_type: PacketType, data, is_bytes=False):
-        protocol.send2(packet_type, data, self._socket, is_bytes)
+        if self.encryption_key:
+            protocol.send2(packet_type, data, self._socket, is_bytes, encryption_key=self.encryption_key)
+        else:
+            protocol.send2(packet_type, data, self._socket, is_bytes)
         print(f"[SEND_DATA] send to {self._addr}: {packet_type, data}")
 
     def _handle_connection(self):
@@ -42,7 +49,7 @@ class SocketConnection(ABC):
     @abstractmethod
     def _handle_data(self, packet_type, data):
         if packet_type == PacketType.DISCONNECT:
-            self._other_disconnect()
+            self.other_disconnect()
 
     def connect(self):
         print(f"[CONNECT] {self._addr}")
@@ -53,7 +60,7 @@ class SocketConnection(ABC):
         self.send_data(PacketType.DISCONNECT, "")
         self._stop_handle_data()
 
-    def _other_disconnect(self):
+    def other_disconnect(self):
         print(f"[OTHER DISCONNECT] {self._addr}")
         self._stop_handle_data()
         self._socket.close()
