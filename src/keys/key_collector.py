@@ -2,6 +2,7 @@ import time
 from queue import Queue
 from pynput.keyboard import Listener
 
+
 class KeyCollector:
     def __init__(self):
         self.key_queue = Queue()
@@ -17,6 +18,7 @@ class KeyCollector:
                 self.key_queue.put(key.char)
             except AttributeError:
                 self.key_queue.put(key.name)
+
 
     def start_listening(self):
         """Enables key collection."""

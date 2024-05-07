@@ -1,6 +1,7 @@
 import sys
 import time
 
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
 
 from src.small_conn.client.client_connection import ClientServerConnection
@@ -18,11 +19,14 @@ class NameInputGUI(QWidget):
     def initUI(self):
         # Create a QVBoxLayout instance
         self.setWindowTitle('name input')
+        self.setFixedSize(200, 100)
         layout = QVBoxLayout()
 
         # Create a QLineEdit widget for name input
         self.name_input = QLineEdit(self)
         self.name_input.setPlaceholderText("Enter your name here")
+        self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
+
 
         # Create another QLabel for displaying the output
         self.result_label = QLabel("pleas enter your name")

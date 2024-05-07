@@ -2,6 +2,7 @@ import sys
 import threading
 
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QMainWindow
 
 from src.share_screen_conn.server_client.screen_share_gui import ScreenShareGui
@@ -28,6 +29,7 @@ class ServerUserGui(QMainWindow):
 
         self.setWindowTitle(f"{self.__name}")
         self.setFixedSize(300, 150)  # Set the fixed size of the window
+        self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
 
         # Main central widget
         central_widget = QWidget()

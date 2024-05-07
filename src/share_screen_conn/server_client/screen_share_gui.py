@@ -2,7 +2,7 @@ import io
 import threading
 from PIL import Image
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 
 from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
@@ -20,7 +20,10 @@ class ScreenShareGui(QWidget):
         self.__user_data_saver = user_data_saver
         self.__name = name
 
-        self.setWindowTitle(name)
+        self.setWindowTitle(f"{name} share screen")
+        self.setFixedSize(1200, 600)
+        self.setWindowIcon(QIcon(r'src/imgs/screen-removebg-preview.png'))
+
         self.__label = QLabel("Waiting for image...", self)
         self.__label.setAlignment(Qt.AlignCenter)
 

@@ -2,6 +2,7 @@ import sys
 import threading
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QListWidget, QLabel, QMainWindow, QPushButton
 
 from src.data_saver.secured_data_saver import SecuredDataSaver
@@ -26,6 +27,11 @@ class ServerGui(QMainWindow):
         central_widget = QWidget()  # Central widget
         layout = QVBoxLayout()  # Layout for central widget
 
+        self.setFixedSize(300, 250)
+        self.setWindowIcon(QIcon(r'src/imgs/users-removebg-preview.png'))
+        self.setWindowTitle("Users")
+
+
         # Label
         self.label = QLabel("Users Connected:")
         layout.addWidget(self.label)
@@ -43,7 +49,6 @@ class ServerGui(QMainWindow):
         # Set central widget and layout
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
-        self.setWindowTitle("Remote Control System Users")
 
     def addUser(self, name: str):
         if name:  # Only add if the text is not empty
@@ -60,7 +65,6 @@ class ServerGui(QMainWindow):
     def disconnect(self):
         print("Disconnected!")
         self.close()
-
 
     def closeEvent(self, event):
         self.__run = False

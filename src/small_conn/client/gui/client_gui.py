@@ -2,6 +2,7 @@ import sys
 import threading
 import time
 
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 
 from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
@@ -16,6 +17,7 @@ class ClientUserGui(QMainWindow):
 
         self.setWindowTitle(f"{self.__name}")
         self.setFixedSize(300, 150)  # Set the fixed size of the window
+        self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
 
         # Layout and widget setup
         self.central_widget = QWidget()
