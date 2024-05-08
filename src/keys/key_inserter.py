@@ -67,13 +67,10 @@ SPECIAL_KEYS = {
 
 
 def send_key(key):
-    # Map of special keys to pynput Key objects
-
+    """input the key in to the user computer"""
     if key in SPECIAL_KEYS:
-        # If the key is a special key, press and release it using the mapped pynput Key object
         keyboard.press(SPECIAL_KEYS[key])
         keyboard.release(SPECIAL_KEYS[key])
     else:
-        # For regular characters, press and release directly
         keyboard.press(key)
         keyboard.release(key)

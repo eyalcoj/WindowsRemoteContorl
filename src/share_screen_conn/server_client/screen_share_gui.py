@@ -10,7 +10,7 @@ from src.small_conn.server_client.server_client_data_saver import KeyValue
 
 
 class ScreenShareGui(QWidget):
-    update_image_signal = pyqtSignal(QPixmap)  # Define a signal that carries a QPixmap object
+    update_image_signal = pyqtSignal(QPixmap)
 
     def __init__(self, server_client_connection: ScreenShareServerClientConnection, name, users_with_share_screen_open,
                  user_data_saver):
@@ -32,7 +32,7 @@ class ScreenShareGui(QWidget):
         self.setLayout(layout)
 
         self.__run = True
-        self.update_image_signal.connect(self.update_label)  # Connect signal to slot
+        self.update_image_signal.connect(self.update_label)
         threading.Thread(target=self.update_img).start()
 
     @pyqtSlot(QPixmap)
@@ -46,12 +46,12 @@ class ScreenShareGui(QWidget):
                 image = Image.open(io.BytesIO(img_data))
                 qt_image = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGB888)
                 pixmap = QPixmap.fromImage(qt_image)
-                self.update_image_signal.emit(pixmap)  # Emit signal with the updated pixmap
+                self.update_image_signal.emit(pixmap)
 
     def stop(self):
+        # it goes to the closeEvent before closing
         self.__run = False
         self.close()
 
     def closeEvent(self, event):
         self.__user_data_saver.set_value(KeyValue.IS_SERVER_SHARE_SCREEN, False)
-

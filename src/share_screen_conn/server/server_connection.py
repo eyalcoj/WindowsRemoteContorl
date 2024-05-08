@@ -69,7 +69,7 @@ class ShareScreenServerConnection:
     def close_server(self):
         print("[SERVER] close")
         self.__run = False
-        # self.disconnect_all_user_name()
+        self.disconnect_all_user_name()
         self.__server_connection.close()
 
     def get_users_conn(self):

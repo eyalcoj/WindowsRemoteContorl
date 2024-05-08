@@ -28,17 +28,14 @@ class ServerUserGui(QMainWindow):
         self.__run = True
 
         self.setWindowTitle(f"{self.__name}")
-        self.setFixedSize(300, 150)  # Set the fixed size of the window
+        self.setFixedSize(300, 150)
         self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
 
-        # Main central widget
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
-        # Layout setup
-        main_layout = QVBoxLayout(central_widget)  # Set the main layout to the central widget
+        main_layout = QVBoxLayout(central_widget)
 
-        # Screen Share setup
         self.screen_share_button = QPushButton('Screen Share')
         self.screen_share_button.setStyleSheet("text-align: left;")
         self.screen_share_indicator = QLabel()
@@ -54,7 +51,6 @@ class ServerUserGui(QMainWindow):
         screen_share_row.setStretch(0, 1)
         main_layout.addLayout(screen_share_row)
 
-        # Keyboard setup
         self.keyboard_button = QPushButton('Keyboard')
         self.keyboard_button.setStyleSheet("text-align: left;")
         self.want_keyboard_indicator = QLabel()
@@ -70,12 +66,9 @@ class ServerUserGui(QMainWindow):
         keyboard_row.setStretch(0, 1)
         main_layout.addLayout(keyboard_row)
 
-        # Disconnect button
         self.disconnect_button = QPushButton('Disconnect')
         main_layout.addWidget(self.disconnect_button)
 
-        print("start connect buttons")
-        # Connecting buttons to methods
         self.keyboard_button.clicked.connect(lambda: self.want_toggle_keyboard_button())
         self.screen_share_button.clicked.connect(lambda: self.want_toggle_screen_share_button())
         self.disconnect_button.clicked.connect(self.disconnect)
@@ -83,8 +76,6 @@ class ServerUserGui(QMainWindow):
         self.open_screen_share_signal.connect(self.open_screen_share_gui)
         self.close_screen_share_signal.connect(self.close_screen_share_gui)
         threading.Thread(target=self.data_saver_update).start()
-
-    # Define other methods like database_update, want_toggle_keyboard_button, want_toggle_screen_share_button here...
 
     def want_toggle_keyboard_button(self):
         current_status = self.__user_data_saver.get_value(KeyValue.IS_SERVER_KEYBOARD)
@@ -94,13 +85,15 @@ class ServerUserGui(QMainWindow):
         current_status = self.__user_data_saver.get_value(KeyValue.IS_SERVER_SHARE_SCREEN)
         self.__user_data_saver.set_value(KeyValue.IS_SERVER_SHARE_SCREEN, not current_status)
 
-    def set_indicator(self, is_green, indicator):
+    @staticmethod
+    def set_indicator(is_green, indicator):
         if is_green:
             indicator.setStyleSheet("background-color: green; border-radius: 10px;")
         else:
             indicator.setStyleSheet("background-color: red; border-radius: 10px;")
 
     def disconnect(self):
+        # it goes to the closeEvent before closing
         print("Disconnected!24")
         self.__users_data_saver.remove(self.__name)
         self.close()
@@ -165,7 +158,6 @@ class ServerUserGui(QMainWindow):
                     self.__users_with_share_screen_open.remove(self.__name)
                     if self.win:
                         self.close_screen_share_signal.emit()
-
 
 
 if __name__ == "__main__":

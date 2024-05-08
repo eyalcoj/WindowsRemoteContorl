@@ -6,7 +6,7 @@ from Crypto.Cipher import DES
 
 
 class Constants:
-    HEADER = 10  # Increase header size if necessary
+    HEADER = 10
     FORMAT = 'utf-8'
 
 
@@ -52,7 +52,6 @@ def recv2(conn: socket.socket, encryption_key=None):
         packet_length_encoded = conn.recv(Constants.HEADER)
         if packet_length_encoded:
             packet_length = int(packet_length_encoded.decode(Constants.FORMAT).strip())
-            print("dgddfd")
             if encryption_key:
                 cipher = DES.new(encryption_key, DES.MODE_ECB)
                 packet_json = cipher.decrypt(conn.recv(packet_length))
@@ -68,5 +67,5 @@ def recv2(conn: socket.socket, encryption_key=None):
         else:
             return PacketType.ERROR, None
     except Exception as e:
-        # print(f"[ERROR] in receive_packet: {e}")
+        print(f"[ERROR] in receive_packet: {e}")
         return PacketType.ERROR, None

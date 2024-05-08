@@ -20,10 +20,7 @@ class ServerClientConnection(SocketConnection):
         server_client_socket.sendall(packet_length_encoded)
         server_client_socket.sendall(data.encode('utf-8'))
         data_size = int(server_client_socket.recv(4).decode('utf-8'))
-        print(f"fsfgfdgfd{data_size}fdgdfg")
         server_public_key = int(server_client_socket.recv(data_size).decode('utf-8'))
-        print(f"fgdfdgdf{server_public_key}")
-        print(f"fgdfdgdf{type(server_public_key)}")
         self.encryption_key = server_dh.generate_shared_secret(server_public_key)
 
         self.start_handle_data()

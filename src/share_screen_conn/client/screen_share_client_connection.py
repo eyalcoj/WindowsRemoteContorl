@@ -26,4 +26,3 @@ class ScreenShareClientServerConnection(SocketConnection):
 
     def is_passing_share_screen(self):
         return self.__is_passing_share_screen
-

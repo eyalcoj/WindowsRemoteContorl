@@ -17,30 +17,23 @@ class NameInputGUI(QWidget):
         self.initUI()
 
     def initUI(self):
-        # Create a QVBoxLayout instance
         self.setWindowTitle('name input')
         self.setFixedSize(200, 100)
         layout = QVBoxLayout()
 
-        # Create a QLineEdit widget for name input
         self.name_input = QLineEdit(self)
         self.name_input.setPlaceholderText("Enter your name here")
         self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
 
-
-        # Create another QLabel for displaying the output
         self.result_label = QLabel("pleas enter your name")
 
-        # Create a QPushButton and set its text
         self.button = QPushButton("Click me!", self)
         self.button.clicked.connect(self.on_click)
 
-        # Add widgets to the layout
         layout.addWidget(self.name_input)
         layout.addWidget(self.button)
         layout.addWidget(self.result_label)
 
-        # Set the layout on the application's window
         self.setLayout(layout)
 
     def on_click(self):
@@ -58,11 +51,11 @@ class NameInputGUI(QWidget):
                     self.name = name
                     self.close_gui()
                 self.is_press = False
+
     def close_gui(self):
+        # it goes to the closeEvent before closing
         print("Close GUI!")
         self.close()
-
-    #     it goes to the closeEvent before closing
 
     def closeEvent(self, event):
         print("X closing")

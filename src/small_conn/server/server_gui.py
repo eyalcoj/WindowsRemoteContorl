@@ -23,39 +23,33 @@ class ServerGui(QMainWindow):
         threading.Thread(target=self.data_saver_update).start()
 
     def initUI(self):
-        # Create central widget and layout
-        central_widget = QWidget()  # Central widget
-        layout = QVBoxLayout()  # Layout for central widget
+        central_widget = QWidget()
+        layout = QVBoxLayout()
 
         self.setFixedSize(300, 250)
         self.setWindowIcon(QIcon(r'src/imgs/users-removebg-preview.png'))
         self.setWindowTitle("Users")
 
-
-        # Label
         self.label = QLabel("Users Connected:")
         layout.addWidget(self.label)
 
-        # List widget
         self.listWidget = QListWidget()
-        self.listWidget.itemDoubleClicked.connect(self.on_item_clicked)  # Connect the itemClicked signal to the slot
+        self.listWidget.itemDoubleClicked.connect(self.on_item_clicked)
         layout.addWidget(self.listWidget)
 
-        # Disconnect button setup
         self.disconnect_button = QPushButton('Disconnect')
         self.disconnect_button.clicked.connect(self.disconnect)
         layout.addWidget(self.disconnect_button)
 
-        # Set central widget and layout
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
     def addUser(self, name: str):
-        if name:  # Only add if the text is not empty
+        if name:
             self.listWidget.addItem(name)
 
     def removeUser(self, name: str):
-        if name:  # Only add if the text is not empty
+        if name:
             items = self.listWidget.findItems(name, Qt.MatchExactly)
             if items:
                 for item in items:
@@ -63,6 +57,7 @@ class ServerGui(QMainWindow):
                     self.listWidget.takeItem(row)
 
     def disconnect(self):
+        # it goes to the closeEvent before closing
         print("Disconnected!")
         self.close()
 
@@ -83,7 +78,6 @@ class ServerGui(QMainWindow):
                                 , self.__user_with_open_gui)
             self.__user_with_open_gui.set_value(user_name, win)
             win.show()
-            print("on_item_clicked")
 
     def data_saver_update(self):
         previous_users_names = []

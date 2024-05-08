@@ -55,7 +55,6 @@ class ClientServerConnection(SocketConnection):
         client_dh = DiffieHellman()
         client_dh.generate_public_key()
         data = str(client_dh.public_key)
-        print(f"dfdsf{data}")
         packet_length_encoded = str(len(data)).encode('utf-8')
         packet_length_encoded += b' ' * (5 - len(data))
         self.__client_socket.sendall(packet_length_encoded)
