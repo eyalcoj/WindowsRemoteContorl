@@ -2,6 +2,8 @@ import io
 import socket
 import threading
 
+import cv2
+import numpy as np
 import pyautogui
 
 from src.share_screen_conn.client.screen_share_client_connection import ScreenShareClientServerConnection
@@ -23,9 +25,11 @@ class ShareScreenClientConnectionWraper:
     @staticmethod
     def frame_build():
         screenshot = pyautogui.screenshot()
-        img_bytes = io.BytesIO()
-        screenshot.save(img_bytes, format='JPEG')
-        return img_bytes.getvalue()
+        screenshot_np = np.array(screenshot)
+        screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+        retval, buffer = cv2.imencode('.jpg', screenshot_np)
+        img_bytes = buffer.tobytes()
+        return img_bytes
 
     def send_frames(self):
         while self.__is_run:

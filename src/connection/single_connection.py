@@ -12,6 +12,8 @@ class SocketConnection(ABC):
         self._handle_connection_thread = threading.Thread(target=self._handle_connection)
         self.is_handle_connection = False
         self.encryption_key = None
+        self.countr1 = 0
+        self.countr2 = 0
 
     def receive_data(self):
         if self.encryption_key:
@@ -22,7 +24,10 @@ class SocketConnection(ABC):
         if packet_type != PacketType.ERROR:
             if packet_type != PacketType.IMG:
                 print(f"[RECEIVE_DATA] receive from {self._addr}: {(packet_type, data)}")
-            pass
+            if packet_type == PacketType.IMG:
+                if self.countr2 == 0:
+                    self.countr2 += 1
+                    print(f"fsdfd{data}fsdfd")
         return packet_type, data
 
     def send_data(self, packet_type: PacketType, data, is_bytes=False):
@@ -30,7 +35,11 @@ class SocketConnection(ABC):
             protocol.send2(packet_type, data, self._socket, is_bytes, encryption_key=self.encryption_key)
         else:
             protocol.send2(packet_type, data, self._socket, is_bytes)
-        print(f"[SEND_DATA] send to {self._addr}: {packet_type, data}")
+        if packet_type == PacketType.IMG:
+            if self.countr1 == 0:
+                self.countr1 += 1
+                print(f"fsdfd{data}fsdfd")
+        # print(f"[SEND_DATA] send to {self._addr}: {packet_type, data}")
 
     def _handle_connection(self):
         print(f"\n[NEW CONNECTION] {self._addr} connected.")

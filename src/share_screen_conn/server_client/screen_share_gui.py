@@ -1,5 +1,8 @@
 import io
 import threading
+
+import cv2
+import numpy as np
 from PIL import Image
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt5.QtGui import QImage, QPixmap, QIcon
@@ -43,9 +46,18 @@ class ScreenShareGui(QWidget):
         while self.__run:
             img_data = self.__server_client_connection.get_image()
             if img_data:
-                image = Image.open(io.BytesIO(img_data))
-                qt_image = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGB888)
+                img_array = np.frombuffer(img_data, dtype=np.uint8)
+                image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                height, width, channel = image.shape
+                bytesPerLine = 3 * width
+                qt_image = QImage(image.data, width, height, bytesPerLine, QImage.Format_RGB888)
+                # Convert QImage to QPixmap
                 pixmap = QPixmap.fromImage(qt_image)
+
+                # qt_image = QImage(image.tobytes(), image.width, image.height, QImage.Format_RGB888)
+                # pixmap = QPixmap.fromImage(qt_image)
+
                 self.update_image_signal.emit(pixmap)
 
     def stop(self):

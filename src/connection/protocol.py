@@ -58,14 +58,12 @@ def recv2(conn: socket.socket, encryption_key=None):
                 print("fdgfds555dgsddgdf")
                 data_recv += conn.recv(packet_length - len(data_recv))
                 print(666)
-            print(data_recv)
             if encryption_key:
                 cipher = DES.new(encryption_key, DES.MODE_ECB)
                 packet_json = cipher.decrypt(data_recv)
                 packet_json = packet_json.decode(Constants.FORMAT)
             else:
                 packet_json = data_recv.decode(Constants.FORMAT)
-            print(f"fdgfdfgfdg{packet_length} fdgfdfgfdg {packet_json}fdgfdfgfdg")
             packet_dict = json.loads(packet_json)
             packet_type = PacketType(packet_dict["type"])
             data = packet_dict["data"]
