@@ -36,3 +36,5 @@ six==1.16.0
 urllib3==2.2.1
 vidstream==0.0.14
 yarg==0.1.9
+
+keyboard~=0.13.5

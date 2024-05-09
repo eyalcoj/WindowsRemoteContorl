@@ -17,6 +17,7 @@ class ShareScreenServerConnection:
 
     def __connect_clients(self):
         try:
+            print("12")
             server_client_socket, addr = self.__server_connection.accept()
         except socket.timeout:
             pass
@@ -69,6 +70,7 @@ class ShareScreenServerConnection:
     def close_server(self):
         print("[SERVER] close")
         self.__run = False
+        KeyCollector.stop_all()
         self.disconnect_all_user_name()
         self.__server_connection.close()
 

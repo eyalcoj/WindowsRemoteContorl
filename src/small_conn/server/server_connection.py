@@ -21,6 +21,7 @@ class ServerConnection:
 
     def __connect_clients(self):
         try:
+            print("23")
             server_client_socket, addr = self.__server_connection.accept()
         except socket.timeout:
             pass

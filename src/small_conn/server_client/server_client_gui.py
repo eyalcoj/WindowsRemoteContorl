@@ -100,6 +100,8 @@ class ServerUserGui(QMainWindow):
 
     def closeEvent(self, event):
         self.__run = False
+        self.__user_data_saver.set_value(KeyValue.IS_SERVER_KEYBOARD, False)
+        self.__user_data_saver.set_value(KeyValue.IS_SERVER_SHARE_SCREEN, False)
         self.__user_with_open_gui.remove(self.__name)
         if self.win:
             self.win.stop()

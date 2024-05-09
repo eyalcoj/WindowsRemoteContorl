@@ -67,6 +67,7 @@ SPECIAL_KEYS = {
 
 def send_key(key):
     """input the key in to the user computer"""
+    print(key)
     if key in SPECIAL_KEYS:
         keyboard.press(SPECIAL_KEYS[key])
         keyboard.release(SPECIAL_KEYS[key])

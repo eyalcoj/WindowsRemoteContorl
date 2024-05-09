@@ -68,3 +68,7 @@ class ServerClientConnection(SocketConnection):
 
     def get_server_client_data_saver(self):
         return self.__server_client_data_saver
+
+    def self_disconnect(self):
+        self.__server_client_data_saver.get_value(KeyValue.KEY_COLLECTOR).stop_listening()
+        super().self_disconnect()
