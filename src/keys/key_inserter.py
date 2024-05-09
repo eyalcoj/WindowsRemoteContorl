@@ -2,7 +2,6 @@ import time
 
 from pynput.keyboard import Controller, Key
 
-# Initialize the keyboard controller
 keyboard = Controller()
 
 SPECIAL_KEYS = {

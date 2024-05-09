@@ -27,7 +27,7 @@ class NameInputGUI(QWidget):
 
         self.result_label = QLabel("pleas enter your name")
 
-        self.button = QPushButton("Click me!", self)
+        self.button = QPushButton("try to enter", self)
         self.button.clicked.connect(self.on_click)
 
         layout.addWidget(self.name_input)

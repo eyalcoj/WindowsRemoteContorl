@@ -14,15 +14,11 @@ class PacketType(Enum):
     ERROR = -1
     DISCONNECT = 0
     NAME_INPUT = 1
-    REGISTER = 2
-    LOGOUT = 3
-    TEXT = 4
-    IMG = 5
-    SHARE_SCREEN_REQUEST = 6
-    DATA_SAVER_UPDATE = 7
-    KEYBOARD_KEY = 8
-    ENCRYPTION_KEY = 9
-
+    TEXT = 2
+    IMG = 3
+    SHARE_SCREEN_REQUEST = 4
+    DATA_SAVER_UPDATE = 5
+    KEYBOARD_KEY = 6
 
 def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False, encryption_key=None):
     try:
