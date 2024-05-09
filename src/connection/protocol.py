@@ -20,6 +20,7 @@ class PacketType(Enum):
     DATA_SAVER_UPDATE = 5
     KEYBOARD_KEY = 6
 
+
 def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False, encryption_key=None):
     try:
         if is_bytes:
@@ -46,14 +47,25 @@ def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False,
 def recv2(conn: socket.socket, encryption_key=None):
     try:
         packet_length_encoded = conn.recv(Constants.HEADER)
+        print(111)
         if packet_length_encoded:
+            print(222)
             packet_length = int(packet_length_encoded.decode(Constants.FORMAT).strip())
+            print(333)
+            data_recv = conn.recv(packet_length)
+            print(444)
+            while packet_length > len(data_recv):
+                print("fdgfds555dgsddgdf")
+                data_recv += conn.recv(packet_length - len(data_recv))
+                print(666)
+            print(data_recv)
             if encryption_key:
                 cipher = DES.new(encryption_key, DES.MODE_ECB)
-                packet_json = cipher.decrypt(conn.recv(packet_length))
+                packet_json = cipher.decrypt(data_recv)
                 packet_json = packet_json.decode(Constants.FORMAT)
             else:
-                packet_json = conn.recv(packet_length).decode(Constants.FORMAT)
+                packet_json = data_recv.decode(Constants.FORMAT)
+            print(f"fdgfdfgfdg{packet_length} fdgfdfgfdg {packet_json}fdgfdfgfdg")
             packet_dict = json.loads(packet_json)
             packet_type = PacketType(packet_dict["type"])
             data = packet_dict["data"]
