@@ -13,7 +13,8 @@ from src.small_conn.server.server_gui import ServerGui
 
 class Constance:
     PORT = 8080
-    SERVER = socket.gethostbyname(socket.gethostname())
+    # SERVER = socket.gethostbyname(socket.gethostname())
+    SERVER = "0.0.0.0"
     ADDR = (SERVER, PORT)
     PORT_SHARE_SCREEN = 5050
     ADDR_SHARE_SCREEN = (SERVER, PORT_SHARE_SCREEN)
