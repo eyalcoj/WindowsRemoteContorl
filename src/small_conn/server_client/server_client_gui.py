@@ -96,6 +96,7 @@ class ServerUserGui(QMainWindow):
         # it goes to the closeEvent before closing
         print("Disconnected!24")
         self.__users_data_saver.remove(self.__name)
+
         self.close()
 
     def closeEvent(self, event):
@@ -103,9 +104,9 @@ class ServerUserGui(QMainWindow):
         self.__user_data_saver.set_value(KeyValue.IS_SERVER_KEYBOARD, False)
         self.__user_data_saver.set_value(KeyValue.IS_SERVER_SHARE_SCREEN, False)
         self.__user_with_open_gui.remove(self.__name)
+        self.__user_with_share_screen_conn.send_disconnect_request()
         if self.win:
             self.win.stop()
-        self.__user_with_share_screen_conn.send_disconnect_request()
         event.accept()
 
     def get_is_run(self):
@@ -129,7 +130,7 @@ class ServerUserGui(QMainWindow):
         prev_share_screen = False
         prev_my_keyboard = False
         prev_my_share_screen = False
-        while self.__run:
+        while self.__run and self.__user_with_share_screen_conn.is_handle_connection:
             current_keyboard = self.__user_data_saver.get_value(KeyValue.IS_CLIENT_KEYBOARD)
             current_share_screen = self.__user_data_saver.get_value(KeyValue.IS_CLIENT_SHARE_SCREEN)
             current_my_keyboard = self.__user_data_saver.get_value(KeyValue.IS_SERVER_KEYBOARD)
@@ -160,6 +161,7 @@ class ServerUserGui(QMainWindow):
                     self.__users_with_share_screen_open.remove(self.__name)
                     if self.win:
                         self.close_screen_share_signal.emit()
+
 
 
 if __name__ == "__main__":

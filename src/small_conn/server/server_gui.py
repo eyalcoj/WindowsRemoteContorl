@@ -50,11 +50,14 @@ class ServerGui(QMainWindow):
 
     def removeUser(self, name: str):
         if name:
-            items = self.listWidget.findItems(name, Qt.MatchExactly)
-            if items:
-                for item in items:
-                    row = self.listWidget.row(item)
-                    self.listWidget.takeItem(row)
+            gui = self.__user_with_open_gui.get_value(name)
+            if gui:
+                gui.close()
+                items = self.listWidget.findItems(name, Qt.MatchExactly)
+                if items:
+                    for item in items:
+                        row = self.listWidget.row(item)
+                        self.listWidget.takeItem(row)
 
     def disconnect(self):
         # it goes to the closeEvent before closing
