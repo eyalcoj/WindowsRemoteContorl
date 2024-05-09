@@ -3,6 +3,7 @@ import threading
 
 from src.data_saver.secured_data_saver import SecuredDataSaver
 from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
+from src.keys.key_collector import KeyCollector
 
 
 class ShareScreenServerConnection:
