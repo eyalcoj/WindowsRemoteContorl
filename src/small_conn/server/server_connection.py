@@ -5,14 +5,17 @@ from src.data_saver.secured_data_saver import SecuredDataSaver
 from src.small_conn.server_client.server_client_connection import ServerClientConnection
 from src.small_conn.server_client.server_client_data_saver import ServerClientDataSaver
 from src.utils.utils import find_changes_between_lists
-from diffiehellman.diffiehellman import DiffieHellman
+
+
+class Constance:
+    CONNECTION_SEC_TIME_OUT = 2
 
 
 class ServerConnection:
 
     def __init__(self, server_socket, addr, user_list):
         self.__server_connection = server_socket
-        self.__server_connection.settimeout(2)
+        self.__server_connection.settimeout(Constance.CONNECTION_SEC_TIME_OUT)
         self.__user_list: SecuredDataSaver = user_list
         self.__user_conn_list: SecuredDataSaver = SecuredDataSaver()
         self.__addr = addr
@@ -21,7 +24,6 @@ class ServerConnection:
 
     def __connect_clients(self):
         try:
-            print("23")
             server_client_socket, addr = self.__server_connection.accept()
         except socket.timeout:
             pass

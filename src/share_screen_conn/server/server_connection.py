@@ -2,15 +2,19 @@ import socket
 import threading
 
 from src.data_saver.secured_data_saver import SecuredDataSaver
-from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
 from src.keys.key_collector import KeyCollector
+from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
+
+
+class Constance:
+    CONNECTION_SEC_TIME_OUT = 2
 
 
 class ShareScreenServerConnection:
 
     def __init__(self, server_socket, addr, user_list):
         self.__server_connection = server_socket
-        self.__server_connection.settimeout(2)
+        self.__server_connection.settimeout(Constance.CONNECTION_SEC_TIME_OUT)
         self.__addr = addr
         self.__user = user_list
         self.__users_conn_list = SecuredDataSaver()
@@ -18,7 +22,6 @@ class ShareScreenServerConnection:
 
     def __connect_clients(self):
         try:
-            print("12")
             server_client_socket, addr = self.__server_connection.accept()
         except socket.timeout:
             pass

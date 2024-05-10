@@ -2,6 +2,7 @@ import base64
 import json
 import socket
 from enum import Enum
+
 from Crypto.Cipher import DES
 
 
@@ -40,24 +41,17 @@ def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False,
             conn.sendall(encrypt_data)
         else:
             conn.sendall(packet_json.encode(Constants.FORMAT))
-    except Exception as e:
-        print(f"[SEND2 ERROR]: {e}")
-
+    except Exception:
+        pass
 
 def recv2(conn: socket.socket, encryption_key=None):
     try:
         packet_length_encoded = conn.recv(Constants.HEADER)
-        print(111)
         if packet_length_encoded:
-            print(222)
             packet_length = int(packet_length_encoded.decode(Constants.FORMAT).strip())
-            print(333)
             data_recv = conn.recv(packet_length)
-            print(444)
             while packet_length > len(data_recv):
-                print("fdgfds555dgsddgdf")
                 data_recv += conn.recv(packet_length - len(data_recv))
-                print(666)
             if encryption_key:
                 cipher = DES.new(encryption_key, DES.MODE_ECB)
                 packet_json = cipher.decrypt(data_recv)
@@ -72,6 +66,5 @@ def recv2(conn: socket.socket, encryption_key=None):
             return packet_type, data
         else:
             return PacketType.ERROR, None
-    except Exception as e:
-        print(f"[ERROR] in receive_packet: {e}")
+    except Exception:
         return PacketType.ERROR, None

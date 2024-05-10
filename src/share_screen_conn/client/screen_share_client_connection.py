@@ -1,6 +1,6 @@
 from src.connection.protocol import PacketType
 from src.connection.single_connection import SocketConnection
-from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
+from src.small_conn.client.client_data_saver import ClientDataSaver
 
 
 class ScreenShareClientServerConnection(SocketConnection):

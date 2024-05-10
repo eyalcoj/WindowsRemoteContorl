@@ -1,4 +1,3 @@
-import io
 import socket
 import threading
 
@@ -13,6 +12,7 @@ class Constance:
     PORT = 8080
     SERVER = socket.gethostbyname(socket.gethostname())
     ADDR = (SERVER, PORT)
+    IMG_FORMAT = '.jpg'
 
 
 class ShareScreenClientConnectionWraper:
@@ -27,7 +27,7 @@ class ShareScreenClientConnectionWraper:
         screenshot = pyautogui.screenshot()
         screenshot_np = np.array(screenshot)
         screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
-        retval, buffer = cv2.imencode('.jpg', screenshot_np)
+        retval, buffer = cv2.imencode(Constance.IMG_FORMAT, screenshot_np)
         img_bytes = buffer.tobytes()
         return img_bytes
 

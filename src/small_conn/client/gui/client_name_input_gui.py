@@ -1,11 +1,12 @@
-import sys
-import time
-
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
 
-from src.small_conn.client.client_connection import ClientServerConnection
 from src.small_conn.client.client_connection_warper import ClientConnectionWarper
+
+
+class Constance:
+    SCREEN_WIDTH = 200
+    SCREEN_HEIGHT = 100
 
 
 class NameInputGUI(QWidget):
@@ -18,7 +19,7 @@ class NameInputGUI(QWidget):
 
     def initUI(self):
         self.setWindowTitle('name input')
-        self.setFixedSize(200, 100)
+        self.setFixedSize(Constance.SCREEN_WIDTH, Constance.SCREEN_HEIGHT)
         layout = QVBoxLayout()
 
         self.name_input = QLineEdit(self)
@@ -63,10 +64,3 @@ class NameInputGUI(QWidget):
 
     def get_name(self):
         return self.name
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ex = NameInputGUI()
-    ex.show()
-    sys.exit(app.exec_())

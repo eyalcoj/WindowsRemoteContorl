@@ -1,13 +1,17 @@
-import sys
 import threading
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QListWidget, QLabel, QMainWindow, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QListWidget, QLabel, QMainWindow, QPushButton
 
 from src.data_saver.secured_data_saver import SecuredDataSaver
 from src.small_conn.server_client.server_client_gui import ServerUserGui
 from src.utils.utils import find_changes_between_lists
+
+
+class Constance:
+    SCREEN_WIDTH = 300
+    SCREEN_HEIGHT = 250
 
 
 class ServerGui(QMainWindow):
@@ -26,7 +30,7 @@ class ServerGui(QMainWindow):
         central_widget = QWidget()
         layout = QVBoxLayout()
 
-        self.setFixedSize(300, 250)
+        self.setFixedSize(Constance.SCREEN_WIDTH, Constance.SCREEN_WIDTH)
         self.setWindowIcon(QIcon(r'src/imgs/users-removebg-preview.png'))
         self.setWindowTitle("Users")
 
@@ -96,10 +100,3 @@ class ServerGui(QMainWindow):
                     self.addUser(_)
 
             previous_users_names = users_names
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = ServerGui()
-    ex.show()
-    sys.exit(app.exec_())

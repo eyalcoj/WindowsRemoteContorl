@@ -1,5 +1,6 @@
-from pynput.keyboard import Listener, KeyCode
 import queue
+
+from pynput.keyboard import Listener
 
 
 class KeyCollector:

@@ -1,10 +1,16 @@
-import sys
 import threading
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 
 from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
+
+
+class Constance:
+    SCREEN_WIDTH = 300
+    SCREEN_HEIGHT = 150
+    INDICATOR_WIDTH = 20
+    INDICATOR_HEIGHT = 20
 
 
 class ClientUserGui(QMainWindow):
@@ -15,7 +21,7 @@ class ClientUserGui(QMainWindow):
         self.__run = True
 
         self.setWindowTitle(f"{self.__name}")
-        self.setFixedSize(300, 150)
+        self.setFixedSize(Constance.SCREEN_WIDTH, Constance.SCREEN_HEIGHT)
         self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
 
         self.central_widget = QWidget()
@@ -24,7 +30,7 @@ class ClientUserGui(QMainWindow):
         self.screen_share_button = QPushButton('screen share button', self)
         self.screen_share_button.setStyleSheet("text-align: left;")
         self.screen_share_indicator = QLabel()
-        self.screen_share_indicator.setFixedSize(20, 20)
+        self.screen_share_indicator.setFixedSize(Constance.INDICATOR_WIDTH, Constance.INDICATOR_HEIGHT)
         self.screen_share_indicator.setStyleSheet("background-color: red; border-radius: 10px;")
         self.screen_share_row = QHBoxLayout()
         self.screen_share_row.addWidget(self.screen_share_button, 1)
@@ -35,7 +41,7 @@ class ClientUserGui(QMainWindow):
         self.keyboard_button = QPushButton('keyboard button', self)
         self.keyboard_button.setStyleSheet("text-align: left;")
         self.keyboard_indicator = QLabel()
-        self.keyboard_indicator.setFixedSize(20, 20)
+        self.keyboard_indicator.setFixedSize(Constance.INDICATOR_WIDTH, Constance.INDICATOR_HEIGHT)
         self.keyboard_indicator.setStyleSheet("background-color: red; border-radius: 10px;")
         self.keyboard_row = QHBoxLayout()
         self.keyboard_row.addWidget(self.keyboard_button, 1)
@@ -70,12 +76,6 @@ class ClientUserGui(QMainWindow):
         else:
             indicator.setStyleSheet("background-color: red; border-radius: 10px;")
 
-    def append_char_to_label(self, char: str):
-        self.__label_text += char
-        if len(self.__label_text) > 39:
-            self.__label_text = self.__label_text[1:]
-        self.keyboard_output_label.setText(self.__label_text)
-
     def disconnect_user(self):
         # it goes to the closeEvent before closing
         print("Disconnected!")
@@ -100,10 +100,3 @@ class ClientUserGui(QMainWindow):
             if prev_share_Screen != current_share_Screen:
                 self.set_indicator(current_share_Screen, self.screen_share_indicator)
                 prev_share_Screen = current_share_Screen
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    win = ClientUserGui()
-    win.show()
-    sys.exit(app.exec_())

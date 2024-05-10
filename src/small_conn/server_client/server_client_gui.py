@@ -1,13 +1,19 @@
-import sys
 import threading
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QMainWindow
+from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QMainWindow
 
 from src.share_screen_conn.server_client.screen_share_gui import ScreenShareGui
 from src.share_screen_conn.server_client.screen_share_server_client_connection import ScreenShareServerClientConnection
 from src.small_conn.server_client.server_client_data_saver import KeyValue
+
+
+class Constance:
+    SCREEN_WIDTH = 300
+    SCREEN_HEIGHT = 150
+    INDICATOR_WIDTH = 20
+    INDICATOR_HEIGHT = 20
 
 
 class ServerUserGui(QMainWindow):
@@ -28,7 +34,7 @@ class ServerUserGui(QMainWindow):
         self.__run = True
 
         self.setWindowTitle(f"{self.__name}")
-        self.setFixedSize(300, 150)
+        self.setFixedSize(Constance.SCREEN_WIDTH, Constance.SCREEN_HEIGHT)
         self.setWindowIcon(QIcon(r'src/imgs/user-removebg-preview.png'))
 
         central_widget = QWidget()
@@ -39,10 +45,10 @@ class ServerUserGui(QMainWindow):
         self.screen_share_button = QPushButton('Screen Share')
         self.screen_share_button.setStyleSheet("text-align: left;")
         self.screen_share_indicator = QLabel()
-        self.screen_share_indicator.setFixedSize(20, 20)
+        self.screen_share_indicator.setFixedSize(Constance.INDICATOR_WIDTH, Constance.SCREEN_HEIGHT)
         self.screen_share_indicator.setStyleSheet("background-color: red; border-radius: 10px;")
         self.want_screen_share_indicator = QLabel()
-        self.want_screen_share_indicator.setFixedSize(20, 20)
+        self.want_screen_share_indicator.setFixedSize(Constance.INDICATOR_WIDTH, Constance.SCREEN_HEIGHT)
         self.want_screen_share_indicator.setStyleSheet("background-color: red; border-radius: 10px;")
         screen_share_row = QHBoxLayout()
         screen_share_row.addWidget(self.screen_share_button, 2)
@@ -54,10 +60,10 @@ class ServerUserGui(QMainWindow):
         self.keyboard_button = QPushButton('Keyboard')
         self.keyboard_button.setStyleSheet("text-align: left;")
         self.want_keyboard_indicator = QLabel()
-        self.want_keyboard_indicator.setFixedSize(20, 20)
+        self.want_keyboard_indicator.setFixedSize(Constance.INDICATOR_WIDTH, Constance.SCREEN_HEIGHT)
         self.want_keyboard_indicator.setStyleSheet("background-color: red; border-radius: 10px;")
         self.keyboard_indicator = QLabel()
-        self.keyboard_indicator.setFixedSize(20, 20)
+        self.keyboard_indicator.setFixedSize(Constance.INDICATOR_WIDTH, Constance.SCREEN_HEIGHT)
         self.keyboard_indicator.setStyleSheet("background-color: red; border-radius: 10px;")
         keyboard_row = QHBoxLayout()
         keyboard_row.addWidget(self.keyboard_button, 2)
@@ -96,7 +102,6 @@ class ServerUserGui(QMainWindow):
         # it goes to the closeEvent before closing
         print("Disconnected!24")
         self.__users_data_saver.remove(self.__name)
-
         self.close()
 
     def closeEvent(self, event):
@@ -161,13 +166,3 @@ class ServerUserGui(QMainWindow):
                     self.__users_with_share_screen_open.remove(self.__name)
                     if self.win:
                         self.close_screen_share_signal.emit()
-
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    window = ServerUserGui()
-    window.show()
-
-    sys.exit(app.exec_())

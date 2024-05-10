@@ -8,6 +8,11 @@ from src.keys import key_inserter
 from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
 
 
+class Constants:
+    HEADER = 4
+    FORMAT = 'utf-8'
+
+
 class ClientServerConnection(SocketConnection):
     def __init__(self, client_socket, addr, client_data_saver: ClientDataSaver):
         super().__init__(client_socket, addr)
@@ -50,18 +55,16 @@ class ClientServerConnection(SocketConnection):
                 prev_share_Screen = current_share_Screen
 
     def connect(self):
-        print("fdgdg")
         super().connect()
         client_dh = DiffieHellman()
         client_dh.generate_public_key()
         data = str(client_dh.public_key)
-        packet_length_encoded = str(len(data)).encode('utf-8')
-        packet_length_encoded += b' ' * (5 - len(data))
+        packet_length_encoded = str(len(data)).encode(Constants.FORMAT)
+        packet_length_encoded += b' ' * (HEADER + 1 - len(data))
         self.__client_socket.sendall(packet_length_encoded)
-        self.__client_socket.sendall(data.encode('utf-8'))
-        data_size = int(self.__client_socket.recv(4).decode('utf-8'))
-        client_public_key = int(self.__client_socket.recv(data_size).decode('utf-8'))
+        self.__client_socket.sendall(data.encode(Constants.FORMAT))
+        data_size = int(self.__client_socket.recv(HEADER).decode(Constants.FORMAT))
+        client_public_key = int(self.__client_socket.recv(data_size).decode(Constants.FORMAT))
         self.encryption_key = client_dh.generate_shared_secret(client_public_key)
         self.start_handle_data()
         threading.Thread(target=self.data_saver_update).start()
-
