@@ -9,15 +9,11 @@ from src.share_screen_conn.client.screen_share_client_connection import ScreenSh
 
 
 class Constance:
-    PORT = 8080
-    SERVER = socket.gethostbyname(socket.gethostname())
-    ADDR = (SERVER, PORT)
     IMG_FORMAT = '.jpg'
 
 
 class ShareScreenClientConnectionWraper:
     def __init__(self, share_screen_client_connection: ScreenShareClientServerConnection):
-        self.__client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__share_screen_client_connection = share_screen_client_connection
         self.__sending_share_screen_thread = threading.Thread(target=self.send_frames)
         self.__is_run = None

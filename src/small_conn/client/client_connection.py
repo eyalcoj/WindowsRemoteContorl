@@ -3,7 +3,7 @@ import threading
 from diffiehellman.diffiehellman import DiffieHellman
 
 from src.connection.protocol import PacketType
-from src.connection.single_connection import SocketConnection
+from src.connection.socket_connection import SocketConnection
 from src.keys import key_inserter
 from src.small_conn.client.client_data_saver import ClientDataSaver, KeyValue
 
@@ -23,8 +23,6 @@ class ClientServerConnection(SocketConnection):
 
     def _handle_data(self, packet_type, data):
         super()._handle_data(packet_type, data)
-        if PacketType(packet_type) == PacketType.TEXT:
-            print(data)
         if not self.is_input_name:
             if PacketType(packet_type) == PacketType.NAME_INPUT:
                 self.__name_input_feedback[0] = data

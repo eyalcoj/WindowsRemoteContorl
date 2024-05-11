@@ -15,11 +15,10 @@ class PacketType(Enum):
     ERROR = -1
     DISCONNECT = 0
     NAME_INPUT = 1
-    TEXT = 2
-    IMG = 3
-    SHARE_SCREEN_REQUEST = 4
-    DATA_SAVER_UPDATE = 5
-    KEYBOARD_KEY = 6
+    IMG = 2
+    SHARE_SCREEN_REQUEST = 3
+    DATA_SAVER_UPDATE = 4
+    KEYBOARD_KEY = 5
 
 
 def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False, encryption_key=None):
@@ -43,6 +42,7 @@ def send2(packet_type: PacketType, payload, conn: socket.socket, is_bytes=False,
             conn.sendall(packet_json.encode(Constants.FORMAT))
     except Exception:
         pass
+
 
 def recv2(conn: socket.socket, encryption_key=None):
     try:

@@ -15,10 +15,3 @@ class DataSaver:
     def remove(self, key):
         if self.dict.get(key):
             self.dict.pop(key)
-
-    def __str__(self):
-        text = ""
-        text += "dict:"
-        for key, value in self.dict.items():
-            text += f"\n\tkey: {key}, value: {value}"
-        return text

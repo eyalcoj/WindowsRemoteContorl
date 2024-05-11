@@ -8,7 +8,6 @@ class KeyCollector:
     listeners_queue = []
 
     def __init__(self):
-        self.is_start = False
         self.key_queue = queue.Queue()
         if KeyCollector.shared_listener is None:
             KeyCollector.shared_listener = Listener(on_press=self._on_press_shared)

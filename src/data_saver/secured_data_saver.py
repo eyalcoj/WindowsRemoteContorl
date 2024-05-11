@@ -33,3 +33,4 @@ class SecuredDataSaver(DataSaver):
         super().remove(key)
         self.lock.release()
         self.event.set()
+

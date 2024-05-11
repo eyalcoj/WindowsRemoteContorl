@@ -1,5 +1,5 @@
 from src.connection.protocol import PacketType
-from src.connection.single_connection import SocketConnection
+from src.connection.socket_connection import SocketConnection
 
 
 class ScreenShareServerClientConnection(SocketConnection):

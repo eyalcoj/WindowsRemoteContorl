@@ -47,7 +47,6 @@ class ClientApplication:
         self.__share_screen_client_connection_wraper.open()
 
         app = QApplication(sys.argv)
-        print("dgsdsgdg")
         self.name_input_gui = NameInputGUI(self.__client_connection_warper)
         self.name_input_gui.show()
         self.t1 = threading.Thread(target=self.check_conn, args=(self.name_input_gui,))
@@ -64,7 +63,7 @@ class ClientApplication:
             self.t2.start()
             app.exec_()
         else:
-            self.__share_screen_client_connection.send_name("haha")
+            self.__share_screen_client_connection.send_name("_")
 
         self.__close()
 
@@ -86,7 +85,3 @@ class ClientApplication:
             self.t2.join()
 
         sys.exit()
-
-    # def __start(self):
-    #     self.__client_connection_warper.open()
-    #     self.__share_screen_client_connection_wraper.open()

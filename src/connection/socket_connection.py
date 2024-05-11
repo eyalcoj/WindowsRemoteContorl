@@ -14,10 +14,7 @@ class SocketConnection(ABC):
         self.encryption_key = None
 
     def receive_data(self):
-        if self.encryption_key:
-            recv = protocol.recv2(self._socket, self.encryption_key)
-        else:
-            recv = protocol.recv2(self._socket)
+        recv = protocol.recv2(self._socket, self.encryption_key)
         packet_type, data = recv
         if packet_type != PacketType.ERROR:
             if packet_type != PacketType.IMG:
@@ -25,10 +22,7 @@ class SocketConnection(ABC):
         return packet_type, data
 
     def send_data(self, packet_type: PacketType, data, is_bytes=False):
-        if self.encryption_key:
-            protocol.send2(packet_type, data, self._socket, is_bytes, encryption_key=self.encryption_key)
-        else:
-            protocol.send2(packet_type, data, self._socket, is_bytes)
+        protocol.send2(packet_type, data, self._socket, is_bytes, encryption_key=self.encryption_key)
         print(f"[SEND_DATA] send to {self._addr}: {packet_type, data}")
 
     def _handle_connection(self):

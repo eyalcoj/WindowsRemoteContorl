@@ -15,11 +15,14 @@ class Constance:
 
 
 class ServerGui(QMainWindow):
-    def __init__(self, users_data_saver: SecuredDataSaver, user_with_share_screen: SecuredDataSaver):
+    def __init__(self, users_data_saver: SecuredDataSaver, users_share_screen_conn: SecuredDataSaver):
         super().__init__()
+        self.label = None
+        self.list_widget = None
+        self.disconnect_button = None
         self.__run = True
         self.__users_data_saver = users_data_saver
-        self.__users_with_share_screen = user_with_share_screen
+        self.__users_share_screen_conn = users_share_screen_conn
         self.initUI()
         self.__user_with_open_gui = SecuredDataSaver()
         self.__users_with_share_screen_open = SecuredDataSaver()
@@ -37,9 +40,9 @@ class ServerGui(QMainWindow):
         self.label = QLabel("Users Connected:")
         layout.addWidget(self.label)
 
-        self.listWidget = QListWidget()
-        self.listWidget.itemDoubleClicked.connect(self.on_item_clicked)
-        layout.addWidget(self.listWidget)
+        self.list_widget = QListWidget()
+        self.list_widget.itemDoubleClicked.connect(self.on_item_clicked)
+        layout.addWidget(self.list_widget)
 
         self.disconnect_button = QPushButton('Disconnect')
         self.disconnect_button.clicked.connect(self.disconnect)
@@ -48,20 +51,20 @@ class ServerGui(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-    def addUser(self, name: str):
+    def add_user(self, name: str):
         if name:
-            self.listWidget.addItem(name)
+            self.list_widget.addItem(name)
 
-    def removeUser(self, name: str):
+    def remove_user(self, name: str):
         if name:
             gui = self.__user_with_open_gui.get_value(name)
             if gui:
                 gui.close()
-                items = self.listWidget.findItems(name, Qt.MatchExactly)
+                items = self.list_widget.findItems(name, Qt.MatchExactly)
                 if items:
                     for item in items:
-                        row = self.listWidget.row(item)
-                        self.listWidget.takeItem(row)
+                        row = self.list_widget.row(item)
+                        self.list_widget.takeItem(row)
 
     def disconnect(self):
         # it goes to the closeEvent before closing
@@ -70,7 +73,7 @@ class ServerGui(QMainWindow):
 
     def closeEvent(self, event):
         self.__run = False
-        self.listWidget.clear()
+        self.list_widget.clear()
         keys = self.__user_with_open_gui.get_keys()
         for _ in keys:
             self.__user_with_open_gui.get_value(_).close()
@@ -81,7 +84,7 @@ class ServerGui(QMainWindow):
         user_name = item.text()
         if self.__user_with_open_gui.get_value(user_name) is None:
             win = ServerUserGui(user_name, self.__users_data_saver.get_value(user_name), self.__users_data_saver,
-                                self.__users_with_share_screen.get_value(user_name), self.__users_with_share_screen_open
+                                self.__users_share_screen_conn.get_value(user_name), self.__users_with_share_screen_open
                                 , self.__user_with_open_gui)
             self.__user_with_open_gui.set_value(user_name, win)
             win.show()
@@ -93,10 +96,10 @@ class ServerGui(QMainWindow):
             added, removed = find_changes_between_lists(previous_users_names, users_names)
             if len(removed) > 0:
                 for _ in removed:
-                    self.removeUser(_)
+                    self.remove_user(_)
 
             if len(added) > 0:
                 for _ in added:
-                    self.addUser(_)
+                    self.add_user(_)
 
             previous_users_names = users_names

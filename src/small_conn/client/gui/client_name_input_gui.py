@@ -12,6 +12,9 @@ class Constance:
 class NameInputGUI(QWidget):
     def __init__(self, client_connection_warper: ClientConnectionWarper):
         super().__init__()
+        self.name_input = None
+        self.result_label = None
+        self.button = None
         self.client_connection_warper = client_connection_warper
         self.name = ""
         self.is_press = False

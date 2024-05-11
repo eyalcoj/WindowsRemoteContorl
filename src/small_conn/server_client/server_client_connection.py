@@ -3,7 +3,7 @@ import threading
 from diffiehellman.diffiehellman import DiffieHellman
 
 from src.connection.protocol import PacketType
-from src.connection.single_connection import SocketConnection
+from src.connection.socket_connection import SocketConnection
 from src.keys.key_collector import KeyCollector
 from src.small_conn.server_client.server_client_data_saver import ServerClientDataSaver, KeyValue
 
@@ -39,8 +39,6 @@ class ServerClientConnection(SocketConnection):
             if PacketType(packet_type) == PacketType.NAME_INPUT:
                 self.__user_name[0] = data["user name"]
                 self.__user_name[1] += 1
-        if PacketType(packet_type) == PacketType.TEXT:
-            print(data)
         if PacketType(packet_type) == PacketType.DATA_SAVER_UPDATE:
             self.__server_client_data_saver.set_value(data[0], data[1])
 

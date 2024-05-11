@@ -22,7 +22,7 @@ class ServerConnection:
         self.__run = True
         threading.Thread(target=self.data_saver_update).start()
 
-    def __connect_clients(self):
+    def __connect_client(self):
         try:
             server_client_socket, addr = self.__server_connection.accept()
         except socket.timeout:
@@ -53,7 +53,9 @@ class ServerConnection:
 
             if not self.__run:
                 break
-            if self.__user_list.get_value(user_name[0]):
+            if self.__user_list.get_keys() >= 5:
+                server_client_connection.name_input_response("There are too many users")
+            elif self.__user_list.get_value(user_name[0]):
                 server_client_connection.name_input_response("The name is all ready in use")
             else:
                 server_client_connection.name_input_response("The name is not in use")
@@ -99,7 +101,7 @@ class ServerConnection:
     def start(self):
         print("[RUN] server is running")
         while self.__run:
-            self.__connect_clients()
+            self.__connect_client()
 
     def close_server(self):
         print("[SERVER] close")

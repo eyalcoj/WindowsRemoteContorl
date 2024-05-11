@@ -16,11 +16,11 @@ class ShareScreenServerConnection:
         self.__server_connection = server_socket
         self.__server_connection.settimeout(Constance.CONNECTION_SEC_TIME_OUT)
         self.__addr = addr
-        self.__user = user_list
+        self.__user_list = user_list
         self.__users_conn_list = SecuredDataSaver()
         self.__run = True
 
-    def __connect_clients(self):
+    def __connect_client(self):
         try:
             server_client_socket, addr = self.__server_connection.accept()
         except socket.timeout:
@@ -69,7 +69,7 @@ class ShareScreenServerConnection:
     def start(self):
         print("[RUN] server is running")
         while self.__run:
-            self.__connect_clients()
+            self.__connect_client()
 
     def close_server(self):
         print("[SERVER] close")
