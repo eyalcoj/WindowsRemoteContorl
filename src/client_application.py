@@ -15,7 +15,7 @@ from src.small_conn.client.gui.client_name_input_gui import NameInputGUI
 
 class Constance:
     PORT = 8080
-    SERVER = "192.168.68.51"
+    SERVER = "192.168.68.60"
     ADDR = (SERVER, PORT)
     PORT_SHARE_SCREEN = 5050
     ADDR_SHARE_SCREEN = (SERVER, PORT_SHARE_SCREEN)

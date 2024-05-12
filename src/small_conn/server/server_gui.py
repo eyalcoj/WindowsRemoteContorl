@@ -60,11 +60,11 @@ class ServerGui(QMainWindow):
             gui = self.__user_with_open_gui.get_value(name)
             if gui:
                 gui.close()
-                items = self.list_widget.findItems(name, Qt.MatchExactly)
-                if items:
-                    for item in items:
-                        row = self.list_widget.row(item)
-                        self.list_widget.takeItem(row)
+            items = self.list_widget.findItems(name, Qt.MatchExactly)
+            if items:
+                for item in items:
+                    row = self.list_widget.row(item)
+                    self.list_widget.takeItem(row)
 
     def disconnect(self):
         # it goes to the closeEvent before closing

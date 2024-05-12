@@ -53,7 +53,7 @@ class ServerConnection:
 
             if not self.__run:
                 break
-            if self.__user_list.get_keys() >= 5:
+            if len(self.__user_list.get_keys()) >= 5:
                 server_client_connection.name_input_response("There are too many users")
             elif self.__user_list.get_value(user_name[0]):
                 server_client_connection.name_input_response("The name is all ready in use")
