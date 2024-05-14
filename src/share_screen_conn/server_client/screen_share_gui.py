@@ -28,7 +28,7 @@ class ScreenShareGui(QWidget):
         self.__name = name
 
         self.setWindowTitle(f"{name} share screen")
-        self.setFixedSize(Constance.SCREEN_WIDTH, Constance.SCREEN_HEIGHT)
+        self.resize(Constance.SCREEN_WIDTH, Constance.SCREEN_HEIGHT)
         self.setWindowIcon(QIcon(r'src/imgs/screen-removebg-preview.png'))
 
         self.__label = QLabel("Waiting for image...", self)

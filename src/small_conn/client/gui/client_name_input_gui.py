@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
 
@@ -41,7 +43,9 @@ class NameInputGUI(QWidget):
         self.setLayout(layout)
 
     def on_click(self):
+        print("in 1")
         if not self.is_press:
+            print("in 2")
             self.is_press = True
             name = self.name_input.text()
             if name.replace(" ", "") != "":
@@ -49,12 +53,11 @@ class NameInputGUI(QWidget):
                 feedback = self.client_connection_warper.feedback
                 self.result_label.setText(f"{feedback}")
                 QApplication.processEvents()
-                if feedback == "The name is all ready in use":
-                    pass
-                elif feedback == "The name is not in use":
+                if feedback == "The name is not in use":
                     self.name = name
                     self.close_gui()
-                self.is_press = False
+                else:
+                    self.is_press = False
 
     def close_gui(self):
         # it goes to the closeEvent before closing
